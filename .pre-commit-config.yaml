@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty type check
+        language: system
+        entry: uv run --directory backend ty check
+        files: ^backend/.*\.py$
+        pass_filenames: false
+
+      - id: biome-check
+        name: biome lint and format
+        language: system
+        entry: pnpm --dir frontend exec biome check --write
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css)$
+        pass_filenames: false
+
+      - id: tsc
+        name: TypeScript type check
+        language: system
+        entry: pnpm --dir frontend exec tsc --noEmit
+        files: ^frontend/.*\.(ts|tsx)$
+        pass_filenames: false
