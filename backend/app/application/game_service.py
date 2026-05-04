@@ -13,14 +13,14 @@ from app.domain.game.models import Game, Player
 
 if TYPE_CHECKING:
     from app.infrastructure.db.game_repository import GameRepository
-    from app.infrastructure.websocket.broadcaster import WebSocketBroadcaster
+    from app.infrastructure.websocket.broadcaster import BroadcasterProtocol
 
 
 class GameService:
     def __init__(
         self,
         game_repo: "GameRepository",
-        broadcaster: "WebSocketBroadcaster",
+        broadcaster: "BroadcasterProtocol",
         engine: GameEngine | None = None,
     ) -> None:
         self._repo = game_repo

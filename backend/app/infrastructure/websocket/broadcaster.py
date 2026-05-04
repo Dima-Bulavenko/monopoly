@@ -5,7 +5,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 import aioboto3
 
@@ -17,6 +17,12 @@ if TYPE_CHECKING:
 
 
 APIGW_ENDPOINT = os.environ.get("APIGW_MANAGEMENT_ENDPOINT")
+
+
+class BroadcasterProtocol(Protocol):
+    async def broadcast(
+        self, game_id: str, events: list[Event], game: Game
+    ) -> None: ...
 
 
 class WebSocketBroadcaster:
