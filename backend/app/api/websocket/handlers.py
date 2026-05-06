@@ -13,7 +13,27 @@ from __future__ import annotations
 import json
 
 from app.application.connection_service import ConnectionService
-from app.application.dto.websocket_dto import InboundMessage
+from app.application.dto.websocket_dto import (
+    AcceptTradeMessage,
+    AuctionBidMessage,
+    AuctionPassMessage,
+    BuyPropertyMessage,
+    BuildHotelMessage,
+    BuildHouseMessage,
+    DeclareBankruptcyMessage,
+    EndTurnMessage,
+    InboundAdapter,
+    MortgagePropertyMessage,
+    PassPropertyMessage,
+    PayJailFineMessage,
+    ProposeTradeMessage,
+    RejectTradeMessage,
+    RollDiceMessage,
+    SellHotelMessage,
+    SellHouseMessage,
+    UnmortgagePropertyMessage,
+    UseJailCardMessage,
+)
 from app.application.game_service import GameService
 from app.domain.exceptions import DomainError
 from app.domain.game.commands import (
@@ -87,7 +107,7 @@ async def action_handler(event: dict, context: object) -> dict:
 
     try:
         body = json.loads(event.get("body") or "{}")
-        msg = InboundMessage(**body)
+        msg = InboundAdapter.validate_python(body)
     except Exception:
         return _err(400, "Invalid message format")
 
@@ -105,7 +125,7 @@ async def action_handler(event: dict, context: object) -> dict:
     player_id: str = meta["player_id"]
 
     try:
-        command = _build_command(msg.action, player_id, msg.payload)
+        command = _build_command(msg, player_id)
     except (KeyError, ValueError) as exc:
         return _err(400, f"Bad payload: {exc}")
 
@@ -120,64 +140,62 @@ async def action_handler(event: dict, context: object) -> dict:
     return _ok()
 
 
-def _build_command(action: str, player_id: str, payload: dict):
-    match action:
-        case "roll_dice":
+def _build_command(msg: object, player_id: str):  # noqa: PLR0911
+    match msg:
+        case RollDiceMessage():
             return RollDiceCommand(player_id=player_id)
-        case "buy_property":
+        case BuyPropertyMessage():
             return BuyPropertyCommand(player_id=player_id)
-        case "pass_property":
+        case PassPropertyMessage():
             return PassPropertyCommand(player_id=player_id)
-        case "auction_bid":
-            return AuctionBidCommand(player_id=player_id, amount=int(payload["amount"]))
-        case "auction_pass":
+        case AuctionBidMessage():
+            return AuctionBidCommand(player_id=player_id, amount=msg.amount)
+        case AuctionPassMessage():
             return AuctionPassCommand(player_id=player_id)
-        case "end_turn":
+        case EndTurnMessage():
             return EndTurnCommand(player_id=player_id)
-        case "build_house":
+        case BuildHouseMessage():
             return BuildHouseCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "sell_house":
+        case SellHouseMessage():
             return SellHouseCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "build_hotel":
+        case BuildHotelMessage():
             return BuildHotelCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "sell_hotel":
+        case SellHotelMessage():
             return SellHotelCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "mortgage_property":
+        case MortgagePropertyMessage():
             return MortgagePropertyCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "unmortgage_property":
+        case UnmortgagePropertyMessage():
             return UnmortgagePropertyCommand(
-                player_id=player_id, property_index=int(payload["property_index"])
+                player_id=player_id, property_index=msg.property_index
             )
-        case "pay_jail_fine":
+        case PayJailFineMessage():
             return PayJailFineCommand(player_id=player_id)
-        case "use_jail_card":
+        case UseJailCardMessage():
             return UseJailCardCommand(player_id=player_id)
-        case "propose_trade":
+        case ProposeTradeMessage():
             return ProposeTradeCommand(
                 player_id=player_id,
-                target_player_id=payload["target_player_id"],
-                offer_property_indices=tuple(payload.get("offer_property_indices", [])),
-                offer_money=int(payload.get("offer_money", 0)),
-                request_property_indices=tuple(
-                    payload.get("request_property_indices", [])
-                ),
-                request_money=int(payload.get("request_money", 0)),
+                target_player_id=msg.target_player_id,
+                offer_property_indices=tuple(msg.offer_property_indices),
+                offer_money=msg.offer_money,
+                request_property_indices=tuple(msg.request_property_indices),
+                request_money=msg.request_money,
             )
-        case "accept_trade":
-            return AcceptTradeCommand(player_id=player_id, trade_id=payload["trade_id"])
-        case "reject_trade":
-            return RejectTradeCommand(player_id=player_id, trade_id=payload["trade_id"])
-        case "declare_bankruptcy":
+        case AcceptTradeMessage():
+            return AcceptTradeCommand(player_id=player_id, trade_id=msg.trade_id)
+        case RejectTradeMessage():
+            return RejectTradeCommand(player_id=player_id, trade_id=msg.trade_id)
+        case DeclareBankruptcyMessage():
             return DeclareBankruptcyCommand(player_id=player_id)
         case _:
-            raise ValueError(f"Unknown action: {action}")
+            raise ValueError(f"Unknown action: {type(msg).__name__}")

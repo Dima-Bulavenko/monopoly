@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from enum import Enum
 from random import Random
+
+from pydantic import BaseModel, ConfigDict
 
 
 class CardEffect(str, Enum):
@@ -21,8 +22,9 @@ class CardEffect(str, Enum):
     BUILDING_REPAIRS = "building_repairs"  # pay per house/hotel
 
 
-@dataclass(frozen=True)
-class Card:
+class Card(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     id: str
     description: str
     effect: CardEffect
@@ -34,109 +36,193 @@ class Card:
 
 
 COMMUNITY_CHEST_CARDS: tuple[Card, ...] = (
-    Card("cc_01", "Advance to Go (Collect $200)", CardEffect.ADVANCE_TO, destination=0),
     Card(
-        "cc_02",
-        "Bank error in your favor – Collect $200",
-        CardEffect.COLLECT_FROM_BANK,
-        200,
-    ),
-    Card("cc_03", "Doctor's fees – Pay $50", CardEffect.PAY_BANK, 50),
-    Card("cc_04", "From sale of stock you get $50", CardEffect.COLLECT_FROM_BANK, 50),
-    Card("cc_05", "Get Out of Jail Free", CardEffect.GET_OUT_OF_JAIL_FREE),
-    Card("cc_06", "Go to Jail", CardEffect.GO_TO_JAIL),
-    Card(
-        "cc_07",
-        "Grand Opera Night – Collect $50 from every player",
-        CardEffect.COLLECT_FROM_PLAYERS,
-        50,
+        id="cc_01",
+        description="Advance to Go (Collect $200)",
+        effect=CardEffect.ADVANCE_TO,
+        destination=0,
     ),
     Card(
-        "cc_08",
-        "Holiday Fund matures – Receive $100",
-        CardEffect.COLLECT_FROM_BANK,
-        100,
-    ),
-    Card("cc_09", "Income tax refund – Collect $20", CardEffect.COLLECT_FROM_BANK, 20),
-    Card(
-        "cc_10",
-        "It is your birthday – Collect $10 from every player",
-        CardEffect.COLLECT_FROM_PLAYERS,
-        10,
+        id="cc_02",
+        description="Bank error in your favor – Collect $200",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=200,
     ),
     Card(
-        "cc_11",
-        "Life insurance matures – Collect $100",
-        CardEffect.COLLECT_FROM_BANK,
-        100,
+        id="cc_03",
+        description="Doctor's fees – Pay $50",
+        effect=CardEffect.PAY_BANK,
+        amount=50,
     ),
-    Card("cc_12", "Hospital fees – Pay $50", CardEffect.PAY_BANK, 50),
-    Card("cc_13", "School fees – Pay $50", CardEffect.PAY_BANK, 50),
-    Card("cc_14", "Receive $25 consultancy fee", CardEffect.COLLECT_FROM_BANK, 25),
     Card(
-        "cc_15",
-        "You are assessed for street repairs: $40/house $115/hotel",
-        CardEffect.BUILDING_REPAIRS,
+        id="cc_04",
+        description="From sale of stock you get $50",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=50,
+    ),
+    Card(
+        id="cc_05",
+        description="Get Out of Jail Free",
+        effect=CardEffect.GET_OUT_OF_JAIL_FREE,
+    ),
+    Card(id="cc_06", description="Go to Jail", effect=CardEffect.GO_TO_JAIL),
+    Card(
+        id="cc_07",
+        description="Grand Opera Night – Collect $50 from every player",
+        effect=CardEffect.COLLECT_FROM_PLAYERS,
+        amount=50,
+    ),
+    Card(
+        id="cc_08",
+        description="Holiday Fund matures – Receive $100",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=100,
+    ),
+    Card(
+        id="cc_09",
+        description="Income tax refund – Collect $20",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=20,
+    ),
+    Card(
+        id="cc_10",
+        description="It is your birthday – Collect $10 from every player",
+        effect=CardEffect.COLLECT_FROM_PLAYERS,
+        amount=10,
+    ),
+    Card(
+        id="cc_11",
+        description="Life insurance matures – Collect $100",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=100,
+    ),
+    Card(
+        id="cc_12",
+        description="Hospital fees – Pay $50",
+        effect=CardEffect.PAY_BANK,
+        amount=50,
+    ),
+    Card(
+        id="cc_13",
+        description="School fees – Pay $50",
+        effect=CardEffect.PAY_BANK,
+        amount=50,
+    ),
+    Card(
+        id="cc_14",
+        description="Receive $25 consultancy fee",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=25,
+    ),
+    Card(
+        id="cc_15",
+        description="You are assessed for street repairs: $40/house $115/hotel",
+        effect=CardEffect.BUILDING_REPAIRS,
         house_cost=40,
         hotel_cost=115,
     ),
     Card(
-        "cc_16",
-        "You have won second prize in a beauty contest – Collect $10",
-        CardEffect.COLLECT_FROM_BANK,
-        10,
+        id="cc_16",
+        description="You have won second prize in a beauty contest – Collect $10",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=10,
     ),
-    Card("cc_17", "You inherit $100", CardEffect.COLLECT_FROM_BANK, 100),
+    Card(
+        id="cc_17",
+        description="You inherit $100",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=100,
+    ),
 )
 
 CHANCE_CARDS: tuple[Card, ...] = (
-    Card("ch_01", "Advance to Go (Collect $200)", CardEffect.ADVANCE_TO, destination=0),
-    Card("ch_02", "Advance to Illinois Ave.", CardEffect.ADVANCE_TO, destination=24),
     Card(
-        "ch_03", "Advance to St. Charles Place", CardEffect.ADVANCE_TO, destination=11
+        id="ch_01",
+        description="Advance to Go (Collect $200)",
+        effect=CardEffect.ADVANCE_TO,
+        destination=0,
     ),
     Card(
-        "ch_04",
-        "Advance token to nearest Railroad",
-        CardEffect.ADVANCE_NEAREST_RAILROAD,
+        id="ch_02",
+        description="Advance to Illinois Ave.",
+        effect=CardEffect.ADVANCE_TO,
+        destination=24,
     ),
     Card(
-        "ch_05",
-        "Advance token to nearest Railroad (pay double)",
-        CardEffect.ADVANCE_NEAREST_RAILROAD,
+        id="ch_03",
+        description="Advance to St. Charles Place",
+        effect=CardEffect.ADVANCE_TO,
+        destination=11,
     ),
     Card(
-        "ch_06", "Advance token to nearest Utility", CardEffect.ADVANCE_NEAREST_UTILITY
+        id="ch_04",
+        description="Advance token to nearest Railroad",
+        effect=CardEffect.ADVANCE_NEAREST_RAILROAD,
     ),
-    Card("ch_07", "Bank pays you dividend of $50", CardEffect.COLLECT_FROM_BANK, 50),
-    Card("ch_08", "Get Out of Jail Free", CardEffect.GET_OUT_OF_JAIL_FREE),
-    Card("ch_09", "Go Back 3 Spaces", CardEffect.GO_BACK, squares_back=3),
-    Card("ch_10", "Go to Jail", CardEffect.GO_TO_JAIL),
     Card(
-        "ch_11",
-        "Make general repairs on all your property: $25/house $100/hotel",
-        CardEffect.BUILDING_REPAIRS,
+        id="ch_05",
+        description="Advance token to nearest Railroad (pay double)",
+        effect=CardEffect.ADVANCE_NEAREST_RAILROAD,
+    ),
+    Card(
+        id="ch_06",
+        description="Advance token to nearest Utility",
+        effect=CardEffect.ADVANCE_NEAREST_UTILITY,
+    ),
+    Card(
+        id="ch_07",
+        description="Bank pays you dividend of $50",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=50,
+    ),
+    Card(
+        id="ch_08",
+        description="Get Out of Jail Free",
+        effect=CardEffect.GET_OUT_OF_JAIL_FREE,
+    ),
+    Card(
+        id="ch_09",
+        description="Go Back 3 Spaces",
+        effect=CardEffect.GO_BACK,
+        squares_back=3,
+    ),
+    Card(id="ch_10", description="Go to Jail", effect=CardEffect.GO_TO_JAIL),
+    Card(
+        id="ch_11",
+        description="Make general repairs on all your property: $25/house $100/hotel",
+        effect=CardEffect.BUILDING_REPAIRS,
         house_cost=25,
         hotel_cost=100,
     ),
-    Card("ch_12", "Pay poor tax of $15", CardEffect.PAY_BANK, 15),
     Card(
-        "ch_13", "Take a trip to Reading Railroad", CardEffect.ADVANCE_TO, destination=5
+        id="ch_12",
+        description="Pay poor tax of $15",
+        effect=CardEffect.PAY_BANK,
+        amount=15,
     ),
     Card(
-        "ch_14", "Take a walk on the Boardwalk", CardEffect.ADVANCE_TO, destination=39
+        id="ch_13",
+        description="Take a trip to Reading Railroad",
+        effect=CardEffect.ADVANCE_TO,
+        destination=5,
     ),
     Card(
-        "ch_15",
-        "Elected Chairman of the Board – Pay each player $50",
-        CardEffect.PAY_PLAYERS,
-        50,
+        id="ch_14",
+        description="Take a walk on the Boardwalk",
+        effect=CardEffect.ADVANCE_TO,
+        destination=39,
     ),
     Card(
-        "ch_16",
-        "Your building loan matures – Collect $150",
-        CardEffect.COLLECT_FROM_BANK,
-        150,
+        id="ch_15",
+        description="Elected Chairman of the Board – Pay each player $50",
+        effect=CardEffect.PAY_PLAYERS,
+        amount=50,
+    ),
+    Card(
+        id="ch_16",
+        description="Your building loan matures – Collect $150",
+        effect=CardEffect.COLLECT_FROM_BANK,
+        amount=150,
     ),
 )
 

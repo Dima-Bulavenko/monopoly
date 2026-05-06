@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from enum import Enum
 from uuid import uuid4
+
+from pydantic import BaseModel, Field
 
 
 class GameStatus(str, Enum):
@@ -28,8 +29,7 @@ class TradeStatus(str, Enum):
     REJECTED = "rejected"
 
 
-@dataclass
-class PropertyState:
+class PropertyState(BaseModel):
     square_index: int
     owner_id: str | None = None
     houses: int = 0  # 0–4
@@ -37,28 +37,25 @@ class PropertyState:
     mortgaged: bool = False
 
 
-@dataclass
-class AuctionState:
+class AuctionState(BaseModel):
     property_index: int
-    bids: dict[str, int] = field(default_factory=dict)  # player_id → current bid
-    passed_player_ids: list[str] = field(default_factory=list)
+    bids: dict[str, int] = Field(default_factory=dict)  # player_id → current bid
+    passed_player_ids: list[str] = Field(default_factory=list)
     current_bidder_index: int = 0  # index into the active (non-passed) player list
 
 
-@dataclass
-class TradeOffer:
+class TradeOffer(BaseModel):
     trade_id: str
     proposer_id: str
     target_id: str
-    offer_property_indices: list[int] = field(default_factory=list)
+    offer_property_indices: list[int] = Field(default_factory=list)
     offer_money: int = 0
-    request_property_indices: list[int] = field(default_factory=list)
+    request_property_indices: list[int] = Field(default_factory=list)
     request_money: int = 0
     status: TradeStatus = TradeStatus.PENDING
 
 
-@dataclass
-class Player:
+class Player(BaseModel):
     player_id: str
     name: str
     position: int = 0
@@ -74,20 +71,19 @@ class Player:
         return cls(player_id=str(uuid4()), name=name)
 
 
-@dataclass
-class Game:
+class Game(BaseModel):
     game_id: str
     status: GameStatus = GameStatus.LOBBY
-    players: list[Player] = field(default_factory=list)
+    players: list[Player] = Field(default_factory=list)
     current_player_index: int = 0
     phase: TurnPhase = TurnPhase.WAITING_FOR_ROLL
 
     # {square_index: PropertyState} for all purchasable squares
-    properties: dict[int, PropertyState] = field(default_factory=dict)
+    properties: dict[int, PropertyState] = Field(default_factory=dict)
 
     # Card deck order stored as lists of card IDs (serialisable)
-    community_chest_deck: list[str] = field(default_factory=list)
-    chance_deck: list[str] = field(default_factory=list)
+    community_chest_deck: list[str] = Field(default_factory=list)
+    chance_deck: list[str] = Field(default_factory=list)
 
     # Active sub-states
     pending_auction: AuctionState | None = None

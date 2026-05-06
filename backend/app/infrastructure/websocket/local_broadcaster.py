@@ -7,12 +7,16 @@ events directly to the connected sockets — no AWS required.
 
 from __future__ import annotations
 
-import dataclasses
 import json
 from collections import defaultdict
 
 from fastapi import WebSocket
 
+from app.application.dto.websocket_dto import (
+    GameUpdateMessage,
+    event_to_dto,
+    game_to_dto,
+)
 from app.domain.game.events import Event
 from app.domain.game.models import Game
 
@@ -52,15 +56,9 @@ class LocalWebSocketBroadcaster:
     """Broadcaster that pushes directly to LocalConnectionManager sockets."""
 
     async def broadcast(self, game_id: str, events: list[Event], game: Game) -> None:
-        payload = {
-            "type": "game_update",
-            "events": [self._serialise_event(e) for e in events],
-            "state": dataclasses.asdict(game),
-        }
-        await local_manager.broadcast(game_id, payload)
-
-    @staticmethod
-    def _serialise_event(event: Event) -> dict:
-        d = dataclasses.asdict(event)
-        d["type"] = type(event).__name__
-        return d
+        message = GameUpdateMessage(
+            type="game_update",
+            events=[event_to_dto(e) for e in events],
+            state=game_to_dto(game),
+        )
+        await local_manager.broadcast(game_id, message.model_dump())

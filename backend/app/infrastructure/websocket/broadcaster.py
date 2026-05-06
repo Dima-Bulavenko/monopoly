@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-import dataclasses
-import json
 import os
 from typing import TYPE_CHECKING, Protocol
 
 import aioboto3
 
+from app.application.dto.websocket_dto import (
+    GameUpdateMessage,
+    event_to_dto,
+    game_to_dto,
+)
 from app.domain.game.events import Event
 from app.domain.game.models import Game
 
@@ -34,13 +37,12 @@ class WebSocketBroadcaster:
         if not connections:
             return
 
-        payload = json.dumps(
-            {
-                "type": "game_update",
-                "events": [self._serialise_event(e) for e in events],
-                "state": self._serialise_game(game),
-            }
-        ).encode()
+        message = GameUpdateMessage(
+            type="game_update",
+            events=[event_to_dto(e) for e in events],
+            state=game_to_dto(game),
+        )
+        payload = message.model_dump_json().encode()
 
         session = aioboto3.Session()
         async with session.client(
@@ -55,13 +57,3 @@ class WebSocketBroadcaster:
                 except apigw.exceptions.GoneException:
                     # Stale connection — clean up
                     await self._connection_repo.delete_connection(conn_id)
-
-    @staticmethod
-    def _serialise_event(event: Event) -> dict:
-        d = dataclasses.asdict(event)
-        d["type"] = type(event).__name__
-        return d
-
-    @staticmethod
-    def _serialise_game(game: Game) -> dict:
-        return dataclasses.asdict(game)

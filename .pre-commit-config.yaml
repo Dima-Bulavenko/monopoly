@@ -40,3 +40,11 @@ repos:
         entry: pnpm --dir frontend exec tsc --noEmit
         files: ^frontend/.*\.(ts|tsx)$
         pass_filenames: false
+
+      - id: check-ws-schema
+        name: WebSocket schema is up to date
+        language: system
+        entry: bash backend/scripts/check_ws_schema.sh
+        pass_filenames: false
+        stages: [pre-push]
+        always_run: true

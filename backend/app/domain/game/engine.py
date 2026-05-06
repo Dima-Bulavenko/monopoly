@@ -8,7 +8,6 @@ The engine never reads from or writes to any external system.
 
 from __future__ import annotations
 
-import copy
 from random import Random
 from typing import Literal
 
@@ -134,7 +133,7 @@ class GameEngine:
 
         The original game object is never mutated — a deep copy is made first.
         """
-        game = copy.deepcopy(game)
+        game = game.model_copy(deep=True)
         events: list[Event] = []
 
         match command:
@@ -187,7 +186,7 @@ class GameEngine:
         self, game: Game, rng: Random = _DEFAULT_RNG
     ) -> tuple[Game, list[Event]]:
         """Transition a LOBBY game to IN_PROGRESS and deal decks."""
-        game = copy.deepcopy(game)
+        game = game.model_copy(deep=True)
         if game.status != GameStatus.LOBBY:
             raise InvalidActionError("Game has already started")
         if len(game.players) < 2:
@@ -239,7 +238,9 @@ class GameEngine:
                 player.jail_turns = 0
                 player.consecutive_doubles = 0
                 events.append(
-                    PlayerReleasedFromJailEvent(player.player_id, "rolled_doubles")
+                    PlayerReleasedFromJailEvent(
+                        player_id=player.player_id, method="rolled_doubles"
+                    )
                 )
                 self._move_player(game, player, die1 + die2, events)
                 game.phase = TurnPhase.END_OF_TURN
@@ -251,7 +252,9 @@ class GameEngine:
                     player.in_jail = False
                     player.jail_turns = 0
                     events.append(
-                        PlayerReleasedFromJailEvent(player.player_id, "paid_fine")
+                        PlayerReleasedFromJailEvent(
+                            player_id=player.player_id, method="paid_fine"
+                        )
                     )
                     self._move_player(game, player, die1 + die2, events)
                 game.phase = TurnPhase.END_OF_TURN
@@ -291,7 +294,11 @@ class GameEngine:
             )
 
         player.position = new_pos
-        events.append(PlayerMovedEvent(player.player_id, old_pos, new_pos))
+        events.append(
+            PlayerMovedEvent(
+                player_id=player.player_id, from_position=old_pos, to_position=new_pos
+            )
+        )
         self._apply_square_effect(game, player, new_pos, events)
 
     def _apply_square_effect(
@@ -305,7 +312,11 @@ class GameEngine:
 
             case SquareType.PROPERTY | SquareType.RAILROAD | SquareType.UTILITY:
                 prop = game.properties[position]
-                events.append(PropertyLandedEvent(player.player_id, position))
+                events.append(
+                    PropertyLandedEvent(
+                        player_id=player.player_id, square_index=position
+                    )
+                )
                 if prop.owner_id is None:
                     game.phase = TurnPhase.WAITING_FOR_BUY_DECISION
                 elif prop.owner_id == player.player_id or prop.mortgaged:
@@ -316,7 +327,12 @@ class GameEngine:
                         player, game.player_by_id(prop.owner_id), rent, events
                     )
                     events.append(
-                        RentPaidEvent(player.player_id, prop.owner_id, position, rent)
+                        RentPaidEvent(
+                            payer_id=player.player_id,
+                            owner_id=prop.owner_id,
+                            square_index=position,
+                            amount=rent,
+                        )
                     )
                     game.phase = TurnPhase.END_OF_TURN
 
@@ -326,7 +342,13 @@ class GameEngine:
                 assert isinstance(square, TaxSquare)
                 self._charge(player, square.amount, events)
                 game.free_parking_pot += square.amount
-                events.append(TaxPaidEvent(player.player_id, position, square.amount))
+                events.append(
+                    TaxPaidEvent(
+                        player_id=player.player_id,
+                        square_index=position,
+                        amount=square.amount,
+                    )
+                )
                 game.phase = TurnPhase.END_OF_TURN
 
             case SquareType.COMMUNITY_CHEST:
@@ -401,7 +423,12 @@ class GameEngine:
             game.chance_deck = deck.to_list()
 
         events.append(
-            CardDrawnEvent(player.player_id, deck_name, card.id, card.description)
+            CardDrawnEvent(
+                player_id=player.player_id,
+                deck=deck_name,
+                card_id=card.id,
+                description=card.description,
+            )
         )
         self._apply_card_effect(game, player, card, deck_name, events)
 
@@ -452,16 +479,32 @@ class GameEngine:
                 new_pos = card.destination
                 if new_pos < old_pos:
                     player.balance += GO_SALARY
-                    events.append(PassedGoEvent(player.player_id, GO_SALARY))
+                    events.append(
+                        PassedGoEvent(
+                            player_id=player.player_id, amount_collected=GO_SALARY
+                        )
+                    )
                 player.position = new_pos
-                events.append(PlayerMovedEvent(player.player_id, old_pos, new_pos))
+                events.append(
+                    PlayerMovedEvent(
+                        player_id=player.player_id,
+                        from_position=old_pos,
+                        to_position=new_pos,
+                    )
+                )
                 self._apply_square_effect(game, player, new_pos, events)
 
             case CardEffect.GO_BACK:
                 old_pos = player.position
                 new_pos = (old_pos - card.squares_back) % BOARD_SIZE
                 player.position = new_pos
-                events.append(PlayerMovedEvent(player.player_id, old_pos, new_pos))
+                events.append(
+                    PlayerMovedEvent(
+                        player_id=player.player_id,
+                        from_position=old_pos,
+                        to_position=new_pos,
+                    )
+                )
                 self._apply_square_effect(game, player, new_pos, events)
 
             case CardEffect.ADVANCE_NEAREST_RAILROAD:
@@ -469,9 +512,19 @@ class GameEngine:
                 old_pos = player.position
                 if new_pos < old_pos:
                     player.balance += GO_SALARY
-                    events.append(PassedGoEvent(player.player_id, GO_SALARY))
+                    events.append(
+                        PassedGoEvent(
+                            player_id=player.player_id, amount_collected=GO_SALARY
+                        )
+                    )
                 player.position = new_pos
-                events.append(PlayerMovedEvent(player.player_id, old_pos, new_pos))
+                events.append(
+                    PlayerMovedEvent(
+                        player_id=player.player_id,
+                        from_position=old_pos,
+                        to_position=new_pos,
+                    )
+                )
                 self._apply_square_effect(game, player, new_pos, events)
 
             case CardEffect.ADVANCE_NEAREST_UTILITY:
@@ -479,9 +532,19 @@ class GameEngine:
                 old_pos = player.position
                 if new_pos < old_pos:
                     player.balance += GO_SALARY
-                    events.append(PassedGoEvent(player.player_id, GO_SALARY))
+                    events.append(
+                        PassedGoEvent(
+                            player_id=player.player_id, amount_collected=GO_SALARY
+                        )
+                    )
                 player.position = new_pos
-                events.append(PlayerMovedEvent(player.player_id, old_pos, new_pos))
+                events.append(
+                    PlayerMovedEvent(
+                        player_id=player.player_id,
+                        from_position=old_pos,
+                        to_position=new_pos,
+                    )
+                )
                 self._apply_square_effect(game, player, new_pos, events)
 
             case CardEffect.BUILDING_REPAIRS:
@@ -529,7 +592,11 @@ class GameEngine:
 
         player.balance -= price
         prop.owner_id = player.player_id
-        events.append(PropertyBoughtEvent(player.player_id, player.position, price))
+        events.append(
+            PropertyBoughtEvent(
+                player_id=player.player_id, square_index=player.position, price=price
+            )
+        )
         game.phase = TurnPhase.END_OF_TURN
 
     def _handle_pass_property(
@@ -553,7 +620,11 @@ class GameEngine:
             current_bidder_index=start_idx % len(active),
         )
         game.phase = TurnPhase.IN_AUCTION
-        events.append(AuctionStartedEvent(prop_index, starting_player.player_id))
+        events.append(
+            AuctionStartedEvent(
+                square_index=prop_index, starting_bidder_id=starting_player.player_id
+            )
+        )
 
     def _handle_auction_bid(
         self, game: Game, cmd: AuctionBidCommand, events: list[Event]
@@ -584,7 +655,7 @@ class GameEngine:
             raise InsufficientFundsError(f"Cannot bid ${cmd.amount}")
 
         auction.bids[cmd.player_id] = cmd.amount
-        events.append(AuctionBidPlacedEvent(cmd.player_id, cmd.amount))
+        events.append(AuctionBidPlacedEvent(player_id=cmd.player_id, amount=cmd.amount))
         auction.current_bidder_index = (auction.current_bidder_index + 1) % len(active)
 
     def _handle_auction_pass(
@@ -606,7 +677,7 @@ class GameEngine:
             raise NotYourTurnError("Not your turn")
 
         auction.passed_player_ids.append(cmd.player_id)
-        events.append(AuctionPassedEvent(cmd.player_id))
+        events.append(AuctionPassedEvent(player_id=cmd.player_id))
 
         remaining = [
             p
@@ -618,7 +689,9 @@ class GameEngine:
             # Everyone passed — no one buys, property stays unowned
             game.pending_auction = None
             game.phase = TurnPhase.END_OF_TURN
-            events.append(AuctionEndedWithNoBidderEvent(auction.property_index))
+            events.append(
+                AuctionEndedWithNoBidderEvent(square_index=auction.property_index)
+            )
             return
 
         if len(remaining) == 1 and auction.bids:
@@ -629,7 +702,11 @@ class GameEngine:
             winner.balance -= winning_bid
             game.properties[auction.property_index].owner_id = winner_id
             events.append(
-                AuctionWonEvent(winner_id, auction.property_index, winning_bid)
+                AuctionWonEvent(
+                    player_id=winner_id,
+                    square_index=auction.property_index,
+                    amount=winning_bid,
+                )
             )
             game.pending_auction = None
             game.phase = TurnPhase.END_OF_TURN
@@ -669,7 +746,11 @@ class GameEngine:
         else:
             game.phase = TurnPhase.WAITING_FOR_ROLL
 
-        events.append(TurnEndedEvent(current_player.player_id, next_player.player_id))
+        events.append(
+            TurnEndedEvent(
+                player_id=current_player.player_id, next_player_id=next_player.player_id
+            )
+        )
 
     # ------------------------------------------------------------------
     # Buildings
@@ -720,7 +801,11 @@ class GameEngine:
         player.balance -= square.house_cost
         prop.houses += 1
         events.append(
-            HouseBuiltEvent(cmd.player_id, cmd.property_index, square.house_cost)
+            HouseBuiltEvent(
+                player_id=cmd.player_id,
+                square_index=cmd.property_index,
+                cost=square.house_cost,
+            )
         )
 
     def _handle_sell_house(
@@ -747,7 +832,11 @@ class GameEngine:
         refund = square.house_cost // 2
         prop.houses -= 1
         player.balance += refund
-        events.append(HouseSoldEvent(cmd.player_id, cmd.property_index, refund))
+        events.append(
+            HouseSoldEvent(
+                player_id=cmd.player_id, square_index=cmd.property_index, refund=refund
+            )
+        )
 
     def _handle_build_hotel(
         self, game: Game, cmd: BuildHotelCommand, events: list[Event]
@@ -791,7 +880,11 @@ class GameEngine:
         prop.houses = 0
         prop.hotel = True
         events.append(
-            HotelBuiltEvent(cmd.player_id, cmd.property_index, square.house_cost)
+            HotelBuiltEvent(
+                player_id=cmd.player_id,
+                square_index=cmd.property_index,
+                cost=square.house_cost,
+            )
         )
 
     def _handle_sell_hotel(
@@ -813,7 +906,11 @@ class GameEngine:
         prop.hotel = False
         prop.houses = 4
         player.balance += refund
-        events.append(HotelSoldEvent(cmd.player_id, cmd.property_index, refund))
+        events.append(
+            HotelSoldEvent(
+                player_id=cmd.player_id, square_index=cmd.property_index, refund=refund
+            )
+        )
 
     # ------------------------------------------------------------------
     # Mortgage
@@ -840,7 +937,13 @@ class GameEngine:
 
         prop.mortgaged = True
         player.balance += mv
-        events.append(PropertyMortgagedEvent(cmd.player_id, cmd.property_index, mv))
+        events.append(
+            PropertyMortgagedEvent(
+                player_id=cmd.player_id,
+                square_index=cmd.property_index,
+                mortgage_value=mv,
+            )
+        )
 
     def _handle_unmortgage(
         self, game: Game, cmd: UnmortgagePropertyCommand, events: list[Event]
@@ -865,7 +968,11 @@ class GameEngine:
 
         player.balance -= cost
         prop.mortgaged = False
-        events.append(PropertyUnmortgagedEvent(cmd.player_id, cmd.property_index, cost))
+        events.append(
+            PropertyUnmortgagedEvent(
+                player_id=cmd.player_id, square_index=cmd.property_index, cost=cost
+            )
+        )
 
     # ------------------------------------------------------------------
     # Jail
@@ -886,7 +993,9 @@ class GameEngine:
         player.in_jail = False
         player.jail_turns = 0
         game.free_parking_pot += JAIL_FINE
-        events.append(PlayerReleasedFromJailEvent(player.player_id, "paid_fine"))
+        events.append(
+            PlayerReleasedFromJailEvent(player_id=player.player_id, method="paid_fine")
+        )
         game.phase = TurnPhase.WAITING_FOR_ROLL
 
     def _handle_use_jail_card(
@@ -903,7 +1012,9 @@ class GameEngine:
         player.get_out_of_jail_cards -= 1
         player.in_jail = False
         player.jail_turns = 0
-        events.append(PlayerReleasedFromJailEvent(player.player_id, "used_card"))
+        events.append(
+            PlayerReleasedFromJailEvent(player_id=player.player_id, method="used_card")
+        )
         game.phase = TurnPhase.WAITING_FOR_ROLL
 
     # ------------------------------------------------------------------
@@ -948,13 +1059,13 @@ class GameEngine:
         game.phase = TurnPhase.WAITING_FOR_TRADE_RESPONSE
         events.append(
             TradeProposedEvent(
-                trade.trade_id,
-                cmd.player_id,
-                cmd.target_player_id,
-                cmd.offer_property_indices,
-                cmd.offer_money,
-                cmd.request_property_indices,
-                cmd.request_money,
+                trade_id=trade.trade_id,
+                proposer_id=cmd.player_id,
+                target_id=cmd.target_player_id,
+                offer_property_indices=cmd.offer_property_indices,
+                offer_money=cmd.offer_money,
+                request_property_indices=cmd.request_property_indices,
+                request_money=cmd.request_money,
             )
         )
 
@@ -987,7 +1098,11 @@ class GameEngine:
 
         trade.status = TradeStatus.ACCEPTED
         events.append(
-            TradeAcceptedEvent(trade.trade_id, trade.proposer_id, trade.target_id)
+            TradeAcceptedEvent(
+                trade_id=trade.trade_id,
+                proposer_id=trade.proposer_id,
+                target_id=trade.target_id,
+            )
         )
         game.pending_trade = None
         game.phase = TurnPhase.END_OF_TURN
@@ -1007,7 +1122,11 @@ class GameEngine:
         trade = game.pending_trade
         trade.status = TradeStatus.REJECTED
         events.append(
-            TradeRejectedEvent(trade.trade_id, trade.proposer_id, trade.target_id)
+            TradeRejectedEvent(
+                trade_id=trade.trade_id,
+                proposer_id=trade.proposer_id,
+                target_id=trade.target_id,
+            )
         )
         game.pending_trade = None
         game.phase = TurnPhase.END_OF_TURN
@@ -1031,7 +1150,7 @@ class GameEngine:
                 prop.hotel = False
                 prop.mortgaged = False
 
-        events.append(BankruptcyDeclaredEvent(cmd.player_id))
+        events.append(BankruptcyDeclaredEvent(player_id=cmd.player_id))
 
         # Check for game over
         active = game.active_players
@@ -1055,8 +1174,14 @@ class GameEngine:
         player.in_jail = True
         player.jail_turns = 0
         player.consecutive_doubles = 0
-        events.append(PlayerMovedEvent(player.player_id, old_pos, JAIL_INDEX))
-        events.append(PlayerJailedEvent(player.player_id, reason))
+        events.append(
+            PlayerMovedEvent(
+                player_id=player.player_id,
+                from_position=old_pos,
+                to_position=JAIL_INDEX,
+            )
+        )
+        events.append(PlayerJailedEvent(player_id=player.player_id, reason=reason))
         game.phase = TurnPhase.END_OF_TURN
 
     def _charge(self, player: Player, amount: int, events: list[Event]) -> None:

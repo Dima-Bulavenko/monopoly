@@ -14,6 +14,7 @@ import json
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.api.websocket.handlers import _build_command
+from app.application.dto.websocket_dto import InboundAdapter
 from app.application.game_service import GameService
 from app.domain.exceptions import DomainError
 from app.infrastructure.db.game_repository import GameNotFoundError, GameRepository
@@ -39,9 +40,8 @@ async def websocket_endpoint(ws: WebSocket, game_id: str, player_id: str) -> Non
             raw = await ws.receive_text()
             try:
                 body = json.loads(raw)
-                action = body.get("action", "")
-                payload = body.get("payload", {})
-                command = _build_command(action, player_id, payload)
+                msg = InboundAdapter.validate_python(body)
+                command = _build_command(msg, player_id)
             except (KeyError, ValueError) as exc:
                 await ws.send_text(json.dumps({"type": "error", "message": str(exc)}))
                 continue

@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from pydantic import BaseModel, ConfigDict
 
 
-@dataclass(frozen=True)
-class Command:
+class Command(BaseModel):
     """Base class for all game commands."""
+
+    model_config = ConfigDict(frozen=True)
 
     player_id: str
 
@@ -17,12 +18,10 @@ class Command:
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class RollDiceCommand(Command):
     pass
 
 
-@dataclass(frozen=True)
 class EndTurnCommand(Command):
     pass
 
@@ -32,14 +31,12 @@ class EndTurnCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class BuyPropertyCommand(Command):
     """Player chooses to buy the property they just landed on."""
 
     pass
 
 
-@dataclass(frozen=True)
 class PassPropertyCommand(Command):
     """Player declines to buy — triggers an auction."""
 
@@ -51,12 +48,10 @@ class PassPropertyCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class AuctionBidCommand(Command):
     amount: int
 
 
-@dataclass(frozen=True)
 class AuctionPassCommand(Command):
     """Player opts out of the current auction round."""
 
@@ -68,22 +63,18 @@ class AuctionPassCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class BuildHouseCommand(Command):
     property_index: int
 
 
-@dataclass(frozen=True)
 class SellHouseCommand(Command):
     property_index: int
 
 
-@dataclass(frozen=True)
 class BuildHotelCommand(Command):
     property_index: int
 
 
-@dataclass(frozen=True)
 class SellHotelCommand(Command):
     property_index: int
 
@@ -93,12 +84,10 @@ class SellHotelCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class MortgagePropertyCommand(Command):
     property_index: int
 
 
-@dataclass(frozen=True)
 class UnmortgagePropertyCommand(Command):
     property_index: int
 
@@ -108,12 +97,10 @@ class UnmortgagePropertyCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class PayJailFineCommand(Command):
     pass
 
 
-@dataclass(frozen=True)
 class UseJailCardCommand(Command):
     pass
 
@@ -123,21 +110,18 @@ class UseJailCardCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class ProposeTradeCommand(Command):
     target_player_id: str
-    offer_property_indices: tuple[int, ...] = field(default_factory=tuple)
+    offer_property_indices: tuple[int, ...] = ()
     offer_money: int = 0
-    request_property_indices: tuple[int, ...] = field(default_factory=tuple)
+    request_property_indices: tuple[int, ...] = ()
     request_money: int = 0
 
 
-@dataclass(frozen=True)
 class AcceptTradeCommand(Command):
     trade_id: str
 
 
-@dataclass(frozen=True)
 class RejectTradeCommand(Command):
     trade_id: str
 
@@ -147,6 +131,5 @@ class RejectTradeCommand(Command):
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
 class DeclareBankruptcyCommand(Command):
     pass

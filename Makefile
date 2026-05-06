@@ -3,6 +3,7 @@
         db-init \
         be-install be-dev be-test be-test-cov be-lint be-format be-typecheck \
         fe-install fe-dev fe-build fe-lint fe-format \
+        gen-types hooks \
         dev
 
 BACKEND_DIR  := backend
@@ -69,6 +70,16 @@ fe-lint: ## Lint frontend
 
 fe-format: ## Format frontend
 	cd $(FRONTEND_DIR) && npm run format
+
+# ── Git hooks ─────────────────────────────────────────────────────────────────
+hooks: ## Install pre-commit hooks (including pre-push for schema staleness check)
+	pre-commit install
+	pre-commit install --hook-type pre-push
+
+# ── Type generation ───────────────────────────────────────────────────────────
+gen-types: ## Regenerate ws_schema.json and frontend/src/types/ws.ts from Pydantic DTOs
+	cd $(BACKEND_DIR) && uv run python scripts/generate_ws_schema.py > ../ws_schema.json
+	cd $(FRONTEND_DIR) && node scripts/gen-ws-types.mjs
 
 # ── Compound ──────────────────────────────────────────────────────────────────
 dev: up db-init ## Start full local dev environment (infra + both servers in parallel)
