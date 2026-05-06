@@ -52,7 +52,7 @@ All commands run from the monorepo root via Make:
 ```sh
 make up          # Start DynamoDB Local (Docker)
 make db-init     # Create DynamoDB table (run once after 'make up')
-make be-dev      # Backend dev server — port 8001
+make be-dev      # Backend dev server — port 8000
 make fe-dev      # Frontend dev server (Vite)
 make dev         # Full local stack (infra + both servers)
 
@@ -67,7 +67,7 @@ make fe-format   # biome format
 
 ## WebSocket Architecture
 
-- **Local dev**: FastAPI WebSocket at `ws://localhost:8001/ws/{game_id}?player_id={player_id}`. In-memory `LocalWebSocketBroadcaster`.
+- **Local dev**: FastAPI WebSocket at `ws://localhost:8000/ws/{game_id}?player_id={player_id}`. In-memory `LocalWebSocketBroadcaster`.
 - **Production**: AWS API Gateway WebSocket routes (`$connect`, `$disconnect`, default `*`). `WebSocketBroadcaster` uses `aioboto3` to push via API Gateway Management API.
 - Message format: `{ "action": "roll_dice", "payload": {} }`.
 - Response format: `{ "type": "game_update", "events": [...], "state": {...} }`.
@@ -75,5 +75,5 @@ make fe-format   # biome format
 ## Infrastructure
 
 - **DynamoDB single-table** design. Partition key patterns: `GAME#{game_id}`, `CONNECTION#{conn_id}`.
-- Local DynamoDB runs on port 8000 (Docker). Set `DYNAMODB_ENDPOINT_URL=http://localhost:8000` in `.env`.
+- Local DynamoDB runs on port 8002 (Docker). Set `DYNAMODB_ENDPOINT_URL=http://localhost:8002` in `.env`.
 - Optimistic locking: always increment `version` on save; raise on version mismatch.

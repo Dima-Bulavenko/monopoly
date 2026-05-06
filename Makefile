@@ -24,7 +24,7 @@ help: ## Show this help
 # ── Infrastructure ────────────────────────────────────────────────────────────
 up: ## Start DynamoDB Local (docker compose)
 	docker compose up -d
-	@echo "DynamoDB Local ready on http://localhost:8000"
+	@echo "DynamoDB Local ready on http://localhost:8002"
 
 down: ## Stop DynamoDB Local
 	docker compose down
@@ -37,7 +37,7 @@ be-install: ## Install backend dependencies
 	cd $(BACKEND_DIR) && uv sync
 
 be-dev: ## Run backend dev server (uvicorn + hot-reload)
-	cd $(BACKEND_DIR) && uv run uvicorn app.main:app --reload --port 8001
+	cd $(BACKEND_DIR) && uv run fastapi dev
 
 be-test: ## Run backend unit tests
 	cd $(BACKEND_DIR) && uv run pytest

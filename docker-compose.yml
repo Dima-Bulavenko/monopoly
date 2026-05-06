@@ -6,7 +6,7 @@ services:
       - "8002:8000"
     command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8002/ || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 5
