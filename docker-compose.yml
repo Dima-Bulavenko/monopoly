@@ -4,9 +4,21 @@ services:
     container_name: monopoly-dynamodb
     ports:
       - "8002:8000"
-    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb"]
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8002/ || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 5
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000
+    depends_on:
+      - dynamodb-local
+volumes:
+  dynamodb-data:
