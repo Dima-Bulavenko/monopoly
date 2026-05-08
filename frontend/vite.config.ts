@@ -7,6 +7,12 @@ import { defineConfig } from "vite";
 
 const config = defineConfig({
 	resolve: { tsconfigPaths: true },
+	server: {
+		proxy: {
+			"/games": "http://localhost:8000",
+			"/ws": { target: "ws://localhost:8000", ws: true },
+		},
+	},
 	plugins: [
 		devtools(),
 		tailwindcss(),
