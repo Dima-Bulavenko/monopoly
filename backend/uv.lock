@@ -258,6 +258,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "mangum" },
     { name = "pwdlib", extra = ["argon2"] },
+    { name = "pydantic-settings" },
 ]
 
 [package.dev-dependencies]
@@ -281,6 +282,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.1" },
     { name = "mangum", specifier = ">=0.19.0" },
     { name = "pwdlib", extras = ["argon2"], specifier = ">=0.3.0" },
+    { name = "pydantic-settings", specifier = ">=2.14.0" },
 ]
 
 [package.metadata.requires-dev]

@@ -1,11 +1,10 @@
-import os
-
 from fastapi import FastAPI
 from mangum import Mangum
 
 from app.api.http.game_router import router as game_router
+from app.config import settings
 
-_IS_LOCAL = os.environ.get("ENV", "local") == "local"
+_IS_LOCAL = settings.is_local
 
 app = FastAPI(
     title="Monopoly API",

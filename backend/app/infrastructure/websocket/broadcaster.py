@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, Protocol
 
 import aioboto3
@@ -12,14 +11,12 @@ from app.application.dto.websocket_dto import (
     event_to_dto,
     game_to_dto,
 )
+from app.config import settings
 from app.domain.game.events import Event
 from app.domain.game.models import Game
 
 if TYPE_CHECKING:
     from app.infrastructure.db.connection_repository import ConnectionRepository
-
-
-APIGW_ENDPOINT = os.environ.get("APIGW_MANAGEMENT_ENDPOINT")
 
 
 class BroadcasterProtocol(Protocol):
@@ -47,8 +44,8 @@ class WebSocketBroadcaster:
         session = aioboto3.Session()
         async with session.client(
             "apigatewaymanagementapi",
-            endpoint_url=APIGW_ENDPOINT,
-            region_name=os.environ.get("AWS_REGION", "us-east-1"),
+            endpoint_url=settings.apigw_management_endpoint,
+            region_name=settings.aws_region,
         ) as apigw:
             for conn in connections:
                 conn_id = conn["connection_id"]
