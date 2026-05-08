@@ -22,4 +22,5 @@ dev = [
     "ruff>=0.15.12",
     "scalene>=2.2.1",
     "ty>=0.0.32",
+    "types-aioboto3[dynamodb]>=15.5.0",
 ]
