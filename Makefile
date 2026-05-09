@@ -33,6 +33,9 @@ down: ## Stop DynamoDB Local
 db-init: ## Create the DynamoDB table locally (run once after 'make up')
 	cd $(BACKEND_DIR) && uv run python scripts/init_local_db.py
 
+be-migrate: ## Apply pending Alembic migrations to local Postgres
+	cd $(BACKEND_DIR) && uv run alembic upgrade head
+
 # ── Backend ───────────────────────────────────────────────────────────────────
 be-install: ## Install backend dependencies
 	cd $(BACKEND_DIR) && uv sync

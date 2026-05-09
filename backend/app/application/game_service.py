@@ -27,16 +27,18 @@ class GameService:
         self._broadcaster = broadcaster
         self._engine = engine or GameEngine()
 
-    async def create_game(self, host_name: str) -> Game:
+    async def create_game(self, host_name: str, user_id: str) -> Game:
         game = Game.create()
-        host = Player.create(host_name)
+        host = Player.create(host_name, user_id=user_id)
         game.players.append(host)
         await self._repo.save(game)
         return game
 
-    async def join_game(self, game_id: str, player_name: str) -> tuple[Game, Player]:
+    async def join_game(
+        self, game_id: str, player_name: str, user_id: str
+    ) -> tuple[Game, Player]:
         game = await self._repo.load(game_id)
-        player = Player.create(player_name)
+        player = Player.create(player_name, user_id=user_id)
         game.players.append(player)
         await self._repo.save(game)
         return game, player

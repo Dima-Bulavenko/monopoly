@@ -82,11 +82,19 @@ async def connect_handler(event: dict, context: object) -> dict:
     """$connect route — store connection → (game_id, player_id) mapping."""
     query = event.get("queryStringParameters") or {}
     game_id = query.get("game_id")
-    player_id = query.get("player_id")
+    token = query.get("token")
 
-    if not game_id or not player_id:
-        return _err(400, "game_id and player_id query params are required")
+    if not game_id or not token:
+        return _err(400, "game_id and token query params are required")
 
+    from app.auth.infrastructure.jwt.rs256_service import make_verifier
+
+    try:
+        payload = make_verifier().verify(token)
+    except ValueError as exc:
+        return _err(401, str(exc))
+
+    player_id: str = payload["sub"]
     conn_id = event["requestContext"]["connectionId"]
     _, conn_svc = _make_services()
     await conn_svc.on_connect(conn_id, game_id, player_id)

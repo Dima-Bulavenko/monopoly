@@ -67,8 +67,11 @@ class Player(BaseModel):
     is_bankrupt: bool = False
 
     @classmethod
-    def create(cls, name: str) -> "Player":
-        return cls(player_id=str(uuid4()), name=name)
+    def create(cls, name: str, user_id: str | None = None) -> "Player":
+        return cls(
+            player_id=user_id if user_id is not None else str(uuid4()),
+            name=name,
+        )
 
 
 class Game(BaseModel):

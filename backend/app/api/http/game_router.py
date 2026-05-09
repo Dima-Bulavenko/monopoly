@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, status
 
+from app.api.deps import CurrentUserDep
 from app.application.dto.game_dto import (
-    CreateGameRequest,
     GameResponse,
     GameStateResponse,
-    JoinGameRequest,
 )
 from app.application.game_service import GameService
 from app.infrastructure.db.connection_repository import ConnectionRepository
@@ -26,9 +25,12 @@ def _make_game_service() -> GameService:
 
 
 @router.post("/", response_model=GameResponse, status_code=status.HTTP_201_CREATED)
-async def create_game(body: CreateGameRequest) -> GameResponse:
+async def create_game(current_user: CurrentUserDep) -> GameResponse:
     svc = _make_game_service()
-    game = await svc.create_game(body.host_name)
+    game = await svc.create_game(
+        host_name=current_user.display_name,
+        user_id=current_user.user_id,
+    )
     return GameResponse(
         game_id=game.game_id,
         status=game.status.value,
@@ -37,10 +39,14 @@ async def create_game(body: CreateGameRequest) -> GameResponse:
 
 
 @router.post("/{game_id}/join", response_model=GameResponse)
-async def join_game(game_id: str, body: JoinGameRequest) -> GameResponse:
+async def join_game(game_id: str, current_user: CurrentUserDep) -> GameResponse:
     svc = _make_game_service()
     try:
-        game, _ = await svc.join_game(game_id, body.player_name)
+        game, _ = await svc.join_game(
+            game_id,
+            player_name=current_user.display_name,
+            user_id=current_user.user_id,
+        )
     except GameNotFoundError:
         raise HTTPException(status_code=404, detail="Game not found")
     return GameResponse(
@@ -51,7 +57,7 @@ async def join_game(game_id: str, body: JoinGameRequest) -> GameResponse:
 
 
 @router.post("/{game_id}/start", status_code=status.HTTP_204_NO_CONTENT)
-async def start_game(game_id: str) -> None:
+async def start_game(game_id: str, current_user: CurrentUserDep) -> None:
     svc = _make_game_service()
     try:
         await svc.start_game(game_id)
@@ -62,7 +68,9 @@ async def start_game(game_id: str) -> None:
 
 
 @router.get("/{game_id}/state", response_model=GameStateResponse)
-async def get_game_state(game_id: str) -> GameStateResponse:
+async def get_game_state(
+    game_id: str, current_user: CurrentUserDep
+) -> GameStateResponse:
     svc = _make_game_service()
     try:
         game = await svc.get_game_state(game_id)

@@ -22,6 +22,15 @@ class Settings(BaseSettings):
     dynamodb_endpoint_url: str | None = None
     apigw_management_endpoint: str | None = None
 
+    # Auth
+    database_url: str = "postgresql+asyncpg://localhost/monopoly"
+    jwt_private_key_pem: str = ""
+    jwt_public_key_pem: str = ""
+    access_token_expire_minutes: int = 15
+    refresh_token_expire_days: int = 30
+    google_client_id: str | None = None
+    apple_client_id: str | None = None
+
     @property
     def is_local(self) -> bool:
         return self.env == "local"

@@ -1,7 +1,7 @@
 """FastAPI WebSocket router for local development.
 
 Replaces API Gateway WebSocket in dev.  The frontend connects to:
-  ws://localhost:8001/ws/{game_id}?player_id={player_id}
+  ws://localhost:8001/ws/{game_id}?token={access_token}
 
 Messages from client:  {"action": "roll_dice", "payload": {}}
 Messages to client:    {"type": "game_update", "events": [...], "state": {...}}
@@ -16,6 +16,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.api.websocket.handlers import _build_command
 from app.application.dto.websocket_dto import InboundAdapter
 from app.application.game_service import GameService
+from app.auth.infrastructure.jwt.rs256_service import make_verifier
 from app.domain.exceptions import DomainError
 from app.infrastructure.db.game_repository import GameNotFoundError, GameRepository
 from app.infrastructure.websocket.local_broadcaster import (
@@ -33,7 +34,13 @@ def _make_game_service() -> GameService:
 
 
 @router.websocket("/ws/{game_id}")
-async def websocket_endpoint(ws: WebSocket, game_id: str, player_id: str) -> None:
+async def websocket_endpoint(ws: WebSocket, game_id: str, token: str) -> None:
+    try:
+        payload = make_verifier().verify(token)
+    except ValueError:
+        await ws.close(code=1008)  # Policy Violation — invalid/expired token
+        return
+    player_id: str = payload["sub"]
     await local_manager.connect(game_id, player_id, ws)
     try:
         while True:

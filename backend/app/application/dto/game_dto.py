@@ -2,15 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
-
-
-class CreateGameRequest(BaseModel):
-    host_name: str = Field(..., min_length=1, max_length=50)
-
-
-class JoinGameRequest(BaseModel):
-    player_name: str = Field(..., min_length=1, max_length=50)
+from pydantic import BaseModel
 
 
 class GameResponse(BaseModel):
