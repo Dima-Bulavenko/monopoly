@@ -22,14 +22,26 @@ class OAuthLoginRequest(BaseModel):
 
 
 class TokenResponse(BaseModel):
+    """Internal DTO — carries both tokens within the service layer."""
+
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
 
 
+class AccessTokenResponse(BaseModel):
+    """Public API response — only the short-lived access token.
+
+    The refresh token is delivered via an httpOnly cookie by the router.
+    """
+
+    access_token: str
+    token_type: str = "bearer"
+
+
 class RefreshRequest(BaseModel):
-    refresh_token: str
+    """Kept for backwards-compat; refresh_token is now read from cookie in the router."""
 
 
 class LogoutRequest(BaseModel):
-    refresh_token: str
+    """Kept for backwards-compat; refresh_token is now read from cookie in the router."""

@@ -13,9 +13,7 @@ from uuid import UUID
 
 from app.auth.application.dto import (
     LoginRequest,
-    LogoutRequest,
     OAuthLoginRequest,
-    RefreshRequest,
     RegisterRequest,
     TokenResponse,
 )
@@ -107,8 +105,8 @@ class AuthService:
 
         return await self._issue_tokens(user.id, user.display_name, req.device_hint)
 
-    async def refresh(self, req: RefreshRequest) -> TokenResponse:
-        token_hash = _hash_token(req.refresh_token)
+    async def refresh(self, refresh_token: str) -> TokenResponse:
+        token_hash = _hash_token(refresh_token)
         stored = await self._token_repo.get_refresh_token(token_hash)
         if stored is None or not stored.is_valid:
             raise InvalidTokenError
@@ -123,8 +121,8 @@ class AuthService:
             stored.user_id, user.display_name, stored.device_hint
         )
 
-    async def logout(self, req: LogoutRequest) -> None:
-        token_hash = _hash_token(req.refresh_token)
+    async def logout(self, refresh_token: str) -> None:
+        token_hash = _hash_token(refresh_token)
         await self._token_repo.revoke_refresh_token(token_hash)
 
     async def logout_all(self, user_id: UUID) -> None:
