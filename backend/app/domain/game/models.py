@@ -99,6 +99,9 @@ class Game(BaseModel):
     # product can choose whether to award it)
     free_parking_pot: int = 0
 
+    # Maximum number of players allowed in this game (set by host, 2–6)
+    max_players: int = Field(default=3, ge=2, le=6)
+
     # Optimistic-locking version incremented on every save
     version: int = 0
 
@@ -107,7 +110,7 @@ class Game(BaseModel):
     # ----------------------------------------------------------------------
 
     @classmethod
-    def create(cls) -> "Game":
+    def create(cls, max_players: int = 3) -> "Game":
         from app.domain.board.squares import (
             BOARD,
             PropertySquare,
@@ -115,7 +118,7 @@ class Game(BaseModel):
             UtilitySquare,
         )
 
-        game = cls(game_id=str(uuid4()))
+        game = cls(game_id=str(uuid4()), max_players=max_players)
         for sq in BOARD:
             if isinstance(sq, (PropertySquare, RailroadSquare, UtilitySquare)):
                 game.properties[sq.index] = PropertyState(square_index=sq.index)

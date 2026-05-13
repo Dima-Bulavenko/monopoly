@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 
 from app.domain.game.commands import Command
 from app.domain.game.engine import GameEngine
-from app.domain.game.events import Event
-from app.domain.game.models import Game, Player
+from app.domain.game.events import Event, PlayerJoinedLobbyEvent
+from app.domain.game.models import Game, GameStatus, Player
 
 if TYPE_CHECKING:
     from app.infrastructure.db.game_repository import GameRepository
@@ -27,8 +27,10 @@ class GameService:
         self._broadcaster = broadcaster
         self._engine = engine or GameEngine()
 
-    async def create_game(self, host_name: str, user_id: str) -> Game:
-        game = Game.create()
+    async def create_game(
+        self, host_name: str, user_id: str, max_players: int = 3
+    ) -> Game:
+        game = Game.create(max_players=max_players)
         host = Player.create(host_name, user_id=user_id)
         game.players.append(host)
         await self._repo.save(game)
@@ -37,10 +39,35 @@ class GameService:
     async def join_game(
         self, game_id: str, player_name: str, user_id: str
     ) -> tuple[Game, Player]:
+        from app.domain.exceptions import InvalidActionError
+
         game = await self._repo.load(game_id)
+        if game.status != GameStatus.LOBBY:
+            raise InvalidActionError("Game is not in the lobby phase")
+        if len(game.players) >= game.max_players:
+            raise InvalidActionError("Game is already full")
+
         player = Player.create(player_name, user_id=user_id)
         game.players.append(player)
         await self._repo.save(game)
+
+        await self._broadcaster.broadcast(
+            game_id,
+            [
+                PlayerJoinedLobbyEvent(
+                    game_id=game_id,
+                    player_id=player.player_id,
+                    player_name=player.name,
+                    player_count=len(game.players),
+                    max_players=game.max_players,
+                )
+            ],
+            game,
+        )
+
+        if len(game.players) == game.max_players:
+            await self.start_game(game_id)
+
         return game, player
 
     async def start_game(self, game_id: str, rng: Random | None = None) -> list[Event]:

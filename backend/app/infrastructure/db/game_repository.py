@@ -88,6 +88,7 @@ class GameRepository:
             },
             "pending_auction": self._serialise_auction(game.pending_auction),
             "pending_trade": self._serialise_trade(game.pending_trade),
+            "max_players": game.max_players,
             "version": game.version,
         }
 
@@ -147,6 +148,7 @@ class GameRepository:
             last_roll=(int(item["last_roll"][0]), int(item["last_roll"][1])),
             community_chest_deck=item["community_chest_deck"],
             chance_deck=item["chance_deck"],
+            max_players=int(item.get("max_players", 2)),
             version=int(item.get("version", 0)),
         )
         game.players = [self._deserialise_player(p) for p in item["players"]]

@@ -224,3 +224,16 @@ class GameStartedEvent(Event):
 
 class GameOverEvent(Event):
     winner_id: str
+
+
+# ---------------------------------------------------------------------------
+# Lobby
+# ---------------------------------------------------------------------------
+
+
+class PlayerJoinedLobbyEvent(Event):
+    game_id: str
+    player_id: str
+    player_name: str
+    player_count: int
+    max_players: int

@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class CreateGameRequest(BaseModel):
+    max_players: int = Field(default=3, ge=2, le=6)
 
 
 class GameResponse(BaseModel):
     game_id: str
     status: str
     player_count: int
+    max_players: int
 
 
 class GameStateResponse(BaseModel):
