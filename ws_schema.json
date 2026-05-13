@@ -5,6 +5,7 @@
         "properties": {
           "action": {
             "const": "accept_trade",
+            "default": "accept_trade",
             "title": "Action",
             "type": "string"
           },
@@ -14,7 +15,6 @@
           }
         },
         "required": [
-          "action",
           "trade_id"
         ],
         "title": "AcceptTradeMessage",
@@ -24,6 +24,7 @@
         "properties": {
           "action": {
             "const": "auction_bid",
+            "default": "auction_bid",
             "title": "Action",
             "type": "string"
           },
@@ -33,7 +34,6 @@
           }
         },
         "required": [
-          "action",
           "amount"
         ],
         "title": "AuctionBidMessage",
@@ -43,13 +43,11 @@
         "properties": {
           "action": {
             "const": "auction_pass",
+            "default": "auction_pass",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "AuctionPassMessage",
         "type": "object"
       },
@@ -57,6 +55,7 @@
         "properties": {
           "action": {
             "const": "build_hotel",
+            "default": "build_hotel",
             "title": "Action",
             "type": "string"
           },
@@ -66,7 +65,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "BuildHotelMessage",
@@ -76,6 +74,7 @@
         "properties": {
           "action": {
             "const": "build_house",
+            "default": "build_house",
             "title": "Action",
             "type": "string"
           },
@@ -85,7 +84,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "BuildHouseMessage",
@@ -95,13 +93,11 @@
         "properties": {
           "action": {
             "const": "buy_property",
+            "default": "buy_property",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "BuyPropertyMessage",
         "type": "object"
       },
@@ -109,13 +105,11 @@
         "properties": {
           "action": {
             "const": "declare_bankruptcy",
+            "default": "declare_bankruptcy",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "DeclareBankruptcyMessage",
         "type": "object"
       },
@@ -123,13 +117,11 @@
         "properties": {
           "action": {
             "const": "end_turn",
+            "default": "end_turn",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "EndTurnMessage",
         "type": "object"
       },
@@ -137,6 +129,7 @@
         "properties": {
           "action": {
             "const": "mortgage_property",
+            "default": "mortgage_property",
             "title": "Action",
             "type": "string"
           },
@@ -146,7 +139,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "MortgagePropertyMessage",
@@ -156,13 +148,11 @@
         "properties": {
           "action": {
             "const": "pass_property",
+            "default": "pass_property",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "PassPropertyMessage",
         "type": "object"
       },
@@ -170,13 +160,11 @@
         "properties": {
           "action": {
             "const": "pay_jail_fine",
+            "default": "pay_jail_fine",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "PayJailFineMessage",
         "type": "object"
       },
@@ -184,6 +172,7 @@
         "properties": {
           "action": {
             "const": "propose_trade",
+            "default": "propose_trade",
             "title": "Action",
             "type": "string"
           },
@@ -219,7 +208,6 @@
           }
         },
         "required": [
-          "action",
           "target_player_id"
         ],
         "title": "ProposeTradeMessage",
@@ -229,6 +217,7 @@
         "properties": {
           "action": {
             "const": "reject_trade",
+            "default": "reject_trade",
             "title": "Action",
             "type": "string"
           },
@@ -238,7 +227,6 @@
           }
         },
         "required": [
-          "action",
           "trade_id"
         ],
         "title": "RejectTradeMessage",
@@ -248,13 +236,11 @@
         "properties": {
           "action": {
             "const": "roll_dice",
+            "default": "roll_dice",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "RollDiceMessage",
         "type": "object"
       },
@@ -262,6 +248,7 @@
         "properties": {
           "action": {
             "const": "sell_hotel",
+            "default": "sell_hotel",
             "title": "Action",
             "type": "string"
           },
@@ -271,7 +258,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "SellHotelMessage",
@@ -281,6 +267,7 @@
         "properties": {
           "action": {
             "const": "sell_house",
+            "default": "sell_house",
             "title": "Action",
             "type": "string"
           },
@@ -290,7 +277,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "SellHouseMessage",
@@ -300,6 +286,7 @@
         "properties": {
           "action": {
             "const": "unmortgage_property",
+            "default": "unmortgage_property",
             "title": "Action",
             "type": "string"
           },
@@ -309,7 +296,6 @@
           }
         },
         "required": [
-          "action",
           "property_index"
         ],
         "title": "UnmortgagePropertyMessage",
@@ -319,13 +305,11 @@
         "properties": {
           "action": {
             "const": "use_jail_card",
+            "default": "use_jail_card",
             "title": "Action",
             "type": "string"
           }
         },
-        "required": [
-          "action"
-        ],
         "title": "UseJailCardMessage",
         "type": "object"
       }
@@ -358,9 +342,6 @@
         "$ref": "#/$defs/RollDiceMessage"
       },
       {
-        "$ref": "#/$defs/EndTurnMessage"
-      },
-      {
         "$ref": "#/$defs/BuyPropertyMessage"
       },
       {
@@ -371,6 +352,9 @@
       },
       {
         "$ref": "#/$defs/AuctionPassMessage"
+      },
+      {
+        "$ref": "#/$defs/EndTurnMessage"
       },
       {
         "$ref": "#/$defs/BuildHouseMessage"
@@ -412,241 +396,6 @@
   },
   "outbound": {
     "$defs": {
-      "AuctionBidPlacedEventDTO": {
-        "properties": {
-          "amount": {
-            "title": "Amount",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "AuctionBidPlacedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "amount"
-        ],
-        "title": "AuctionBidPlacedEventDTO",
-        "type": "object"
-      },
-      "AuctionEndedWithNoBidderEventDTO": {
-        "properties": {
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "AuctionEndedWithNoBidderEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "square_index"
-        ],
-        "title": "AuctionEndedWithNoBidderEventDTO",
-        "type": "object"
-      },
-      "AuctionPassedEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "AuctionPassedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id"
-        ],
-        "title": "AuctionPassedEventDTO",
-        "type": "object"
-      },
-      "AuctionStartedEventDTO": {
-        "properties": {
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "starting_bidder_id": {
-            "title": "Starting Bidder Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "AuctionStartedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "square_index",
-          "starting_bidder_id"
-        ],
-        "title": "AuctionStartedEventDTO",
-        "type": "object"
-      },
-      "AuctionStateDTO": {
-        "properties": {
-          "bids": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Bids",
-            "type": "object"
-          },
-          "current_bidder_index": {
-            "title": "Current Bidder Index",
-            "type": "integer"
-          },
-          "passed_player_ids": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Passed Player Ids",
-            "type": "array"
-          },
-          "property_index": {
-            "title": "Property Index",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "property_index",
-          "bids",
-          "passed_player_ids",
-          "current_bidder_index"
-        ],
-        "title": "AuctionStateDTO",
-        "type": "object"
-      },
-      "AuctionWonEventDTO": {
-        "properties": {
-          "amount": {
-            "title": "Amount",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "AuctionWonEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "amount"
-        ],
-        "title": "AuctionWonEventDTO",
-        "type": "object"
-      },
-      "BankruptcyDeclaredEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "BankruptcyDeclaredEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id"
-        ],
-        "title": "BankruptcyDeclaredEventDTO",
-        "type": "object"
-      },
-      "CardDrawnEventDTO": {
-        "properties": {
-          "card_id": {
-            "title": "Card Id",
-            "type": "string"
-          },
-          "deck": {
-            "enum": [
-              "community_chest",
-              "chance"
-            ],
-            "title": "Deck",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "CardDrawnEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "deck",
-          "card_id",
-          "description"
-        ],
-        "title": "CardDrawnEventDTO",
-        "type": "object"
-      },
-      "DiceRolledEventDTO": {
-        "properties": {
-          "die1": {
-            "title": "Die1",
-            "type": "integer"
-          },
-          "die2": {
-            "title": "Die2",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "DiceRolledEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "die1",
-          "die2"
-        ],
-        "title": "DiceRolledEventDTO",
-        "type": "object"
-      },
       "ErrorMessage": {
         "properties": {
           "code": {
@@ -659,996 +408,50 @@
           },
           "type": {
             "const": "error",
+            "default": "error",
             "title": "Type",
             "type": "string"
           }
         },
         "required": [
-          "type",
           "code",
           "message"
         ],
         "title": "ErrorMessage",
         "type": "object"
       },
-      "GameOverEventDTO": {
-        "properties": {
-          "type": {
-            "const": "GameOverEvent",
-            "title": "Type",
-            "type": "string"
-          },
-          "winner_id": {
-            "title": "Winner Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "winner_id"
-        ],
-        "title": "GameOverEventDTO",
-        "type": "object"
-      },
-      "GameStartedEventDTO": {
-        "properties": {
-          "first_player_id": {
-            "title": "First Player Id",
-            "type": "string"
-          },
-          "game_id": {
-            "title": "Game Id",
-            "type": "string"
-          },
-          "player_ids": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Player Ids",
-            "type": "array"
-          },
-          "type": {
-            "const": "GameStartedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "game_id",
-          "player_ids",
-          "first_player_id"
-        ],
-        "title": "GameStartedEventDTO",
-        "type": "object"
-      },
-      "GameStateDTO": {
-        "properties": {
-          "chance_deck": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Chance Deck",
-            "type": "array"
-          },
-          "community_chest_deck": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Community Chest Deck",
-            "type": "array"
-          },
-          "current_player_index": {
-            "title": "Current Player Index",
-            "type": "integer"
-          },
-          "free_parking_pot": {
-            "title": "Free Parking Pot",
-            "type": "integer"
-          },
-          "game_id": {
-            "title": "Game Id",
-            "type": "string"
-          },
-          "last_roll": {
-            "items": {
-              "type": "integer"
-            },
-            "title": "Last Roll",
-            "type": "array"
-          },
-          "pending_auction": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/AuctionStateDTO"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "pending_trade": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/TradeOfferDTO"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "phase": {
-            "title": "Phase",
-            "type": "string"
-          },
-          "players": {
-            "items": {
-              "$ref": "#/$defs/PlayerDTO"
-            },
-            "title": "Players",
-            "type": "array"
-          },
-          "properties": {
-            "additionalProperties": {
-              "$ref": "#/$defs/PropertyStateDTO"
-            },
-            "title": "Properties",
-            "type": "object"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "version": {
-            "title": "Version",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "game_id",
-          "status",
-          "players",
-          "current_player_index",
-          "phase",
-          "properties",
-          "community_chest_deck",
-          "chance_deck",
-          "last_roll",
-          "free_parking_pot",
-          "version"
-        ],
-        "title": "GameStateDTO",
-        "type": "object"
-      },
       "GameUpdateMessage": {
         "properties": {
           "events": {
+            "default": [],
             "items": {
-              "discriminator": {
-                "mapping": {
-                  "AuctionBidPlacedEvent": "#/$defs/AuctionBidPlacedEventDTO",
-                  "AuctionEndedWithNoBidderEvent": "#/$defs/AuctionEndedWithNoBidderEventDTO",
-                  "AuctionPassedEvent": "#/$defs/AuctionPassedEventDTO",
-                  "AuctionStartedEvent": "#/$defs/AuctionStartedEventDTO",
-                  "AuctionWonEvent": "#/$defs/AuctionWonEventDTO",
-                  "BankruptcyDeclaredEvent": "#/$defs/BankruptcyDeclaredEventDTO",
-                  "CardDrawnEvent": "#/$defs/CardDrawnEventDTO",
-                  "DiceRolledEvent": "#/$defs/DiceRolledEventDTO",
-                  "GameOverEvent": "#/$defs/GameOverEventDTO",
-                  "GameStartedEvent": "#/$defs/GameStartedEventDTO",
-                  "HotelBuiltEvent": "#/$defs/HotelBuiltEventDTO",
-                  "HotelSoldEvent": "#/$defs/HotelSoldEventDTO",
-                  "HouseBuiltEvent": "#/$defs/HouseBuiltEventDTO",
-                  "HouseSoldEvent": "#/$defs/HouseSoldEventDTO",
-                  "PassedGoEvent": "#/$defs/PassedGoEventDTO",
-                  "PlayerJailedEvent": "#/$defs/PlayerJailedEventDTO",
-                  "PlayerMovedEvent": "#/$defs/PlayerMovedEventDTO",
-                  "PlayerReleasedFromJailEvent": "#/$defs/PlayerReleasedFromJailEventDTO",
-                  "PropertyBoughtEvent": "#/$defs/PropertyBoughtEventDTO",
-                  "PropertyLandedEvent": "#/$defs/PropertyLandedEventDTO",
-                  "PropertyMortgagedEvent": "#/$defs/PropertyMortgagedEventDTO",
-                  "PropertyUnmortgagedEvent": "#/$defs/PropertyUnmortgagedEventDTO",
-                  "RentPaidEvent": "#/$defs/RentPaidEventDTO",
-                  "TaxPaidEvent": "#/$defs/TaxPaidEventDTO",
-                  "TradeAcceptedEvent": "#/$defs/TradeAcceptedEventDTO",
-                  "TradeProposedEvent": "#/$defs/TradeProposedEventDTO",
-                  "TradeRejectedEvent": "#/$defs/TradeRejectedEventDTO",
-                  "TurnEndedEvent": "#/$defs/TurnEndedEventDTO"
-                },
-                "propertyName": "type"
-              },
-              "oneOf": [
-                {
-                  "$ref": "#/$defs/DiceRolledEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PlayerMovedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PassedGoEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PropertyLandedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/RentPaidEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PropertyBoughtEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PropertyMortgagedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PropertyUnmortgagedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/AuctionStartedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/AuctionBidPlacedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/AuctionPassedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/AuctionWonEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/AuctionEndedWithNoBidderEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/HouseBuiltEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/HouseSoldEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/HotelBuiltEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/HotelSoldEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PlayerJailedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/PlayerReleasedFromJailEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/TaxPaidEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/CardDrawnEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/TradeProposedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/TradeAcceptedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/TradeRejectedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/BankruptcyDeclaredEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/TurnEndedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/GameStartedEventDTO"
-                },
-                {
-                  "$ref": "#/$defs/GameOverEventDTO"
-                }
-              ]
+              "additionalProperties": true,
+              "type": "object"
             },
             "title": "Events",
             "type": "array"
           },
           "state": {
-            "$ref": "#/$defs/GameStateDTO"
-          },
-          "type": {
-            "const": "game_update",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "events",
-          "state"
-        ],
-        "title": "GameUpdateMessage",
-        "type": "object"
-      },
-      "HotelBuiltEventDTO": {
-        "properties": {
-          "cost": {
-            "title": "Cost",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "HotelBuiltEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "cost"
-        ],
-        "title": "HotelBuiltEventDTO",
-        "type": "object"
-      },
-      "HotelSoldEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "refund": {
-            "title": "Refund",
-            "type": "integer"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "HotelSoldEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "refund"
-        ],
-        "title": "HotelSoldEventDTO",
-        "type": "object"
-      },
-      "HouseBuiltEventDTO": {
-        "properties": {
-          "cost": {
-            "title": "Cost",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "HouseBuiltEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "cost"
-        ],
-        "title": "HouseBuiltEventDTO",
-        "type": "object"
-      },
-      "HouseSoldEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "refund": {
-            "title": "Refund",
-            "type": "integer"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "HouseSoldEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "refund"
-        ],
-        "title": "HouseSoldEventDTO",
-        "type": "object"
-      },
-      "PassedGoEventDTO": {
-        "properties": {
-          "amount_collected": {
-            "title": "Amount Collected",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "PassedGoEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "amount_collected"
-        ],
-        "title": "PassedGoEventDTO",
-        "type": "object"
-      },
-      "PlayerDTO": {
-        "properties": {
-          "balance": {
-            "title": "Balance",
-            "type": "integer"
-          },
-          "consecutive_doubles": {
-            "title": "Consecutive Doubles",
-            "type": "integer"
-          },
-          "get_out_of_jail_cards": {
-            "title": "Get Out Of Jail Cards",
-            "type": "integer"
-          },
-          "in_jail": {
-            "title": "In Jail",
-            "type": "boolean"
-          },
-          "is_bankrupt": {
-            "title": "Is Bankrupt",
-            "type": "boolean"
-          },
-          "jail_turns": {
-            "title": "Jail Turns",
-            "type": "integer"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "position": {
-            "title": "Position",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "player_id",
-          "name",
-          "position",
-          "balance",
-          "in_jail",
-          "jail_turns",
-          "consecutive_doubles",
-          "get_out_of_jail_cards",
-          "is_bankrupt"
-        ],
-        "title": "PlayerDTO",
-        "type": "object"
-      },
-      "PlayerJailedEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "reason": {
-            "enum": [
-              "go_to_jail_square",
-              "three_doubles",
-              "card"
-            ],
-            "title": "Reason",
-            "type": "string"
-          },
-          "type": {
-            "const": "PlayerJailedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "reason"
-        ],
-        "title": "PlayerJailedEventDTO",
-        "type": "object"
-      },
-      "PlayerMovedEventDTO": {
-        "properties": {
-          "from_position": {
-            "title": "From Position",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "to_position": {
-            "title": "To Position",
-            "type": "integer"
-          },
-          "type": {
-            "const": "PlayerMovedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "from_position",
-          "to_position"
-        ],
-        "title": "PlayerMovedEventDTO",
-        "type": "object"
-      },
-      "PlayerReleasedFromJailEventDTO": {
-        "properties": {
-          "method": {
-            "enum": [
-              "paid_fine",
-              "used_card",
-              "rolled_doubles"
-            ],
-            "title": "Method",
-            "type": "string"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "PlayerReleasedFromJailEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "method"
-        ],
-        "title": "PlayerReleasedFromJailEventDTO",
-        "type": "object"
-      },
-      "PropertyBoughtEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "price": {
-            "title": "Price",
-            "type": "integer"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "PropertyBoughtEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "price"
-        ],
-        "title": "PropertyBoughtEventDTO",
-        "type": "object"
-      },
-      "PropertyLandedEventDTO": {
-        "properties": {
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "PropertyLandedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index"
-        ],
-        "title": "PropertyLandedEventDTO",
-        "type": "object"
-      },
-      "PropertyMortgagedEventDTO": {
-        "properties": {
-          "mortgage_value": {
-            "title": "Mortgage Value",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "PropertyMortgagedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "mortgage_value"
-        ],
-        "title": "PropertyMortgagedEventDTO",
-        "type": "object"
-      },
-      "PropertyStateDTO": {
-        "properties": {
-          "hotel": {
-            "default": false,
-            "title": "Hotel",
-            "type": "boolean"
-          },
-          "houses": {
-            "default": 0,
-            "title": "Houses",
-            "type": "integer"
-          },
-          "mortgaged": {
-            "default": false,
-            "title": "Mortgaged",
-            "type": "boolean"
-          },
-          "owner_id": {
             "anyOf": [
               {
-                "type": "string"
+                "additionalProperties": true,
+                "type": "object"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
-            "title": "Owner Id"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "square_index"
-        ],
-        "title": "PropertyStateDTO",
-        "type": "object"
-      },
-      "PropertyUnmortgagedEventDTO": {
-        "properties": {
-          "cost": {
-            "title": "Cost",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
+            "title": "State"
           },
           "type": {
-            "const": "PropertyUnmortgagedEvent",
+            "const": "game_update",
+            "default": "game_update",
             "title": "Type",
             "type": "string"
           }
         },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "cost"
-        ],
-        "title": "PropertyUnmortgagedEventDTO",
-        "type": "object"
-      },
-      "RentPaidEventDTO": {
-        "properties": {
-          "amount": {
-            "title": "Amount",
-            "type": "integer"
-          },
-          "owner_id": {
-            "title": "Owner Id",
-            "type": "string"
-          },
-          "payer_id": {
-            "title": "Payer Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "RentPaidEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "payer_id",
-          "owner_id",
-          "square_index",
-          "amount"
-        ],
-        "title": "RentPaidEventDTO",
-        "type": "object"
-      },
-      "TaxPaidEventDTO": {
-        "properties": {
-          "amount": {
-            "title": "Amount",
-            "type": "integer"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "square_index": {
-            "title": "Square Index",
-            "type": "integer"
-          },
-          "type": {
-            "const": "TaxPaidEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "square_index",
-          "amount"
-        ],
-        "title": "TaxPaidEventDTO",
-        "type": "object"
-      },
-      "TradeAcceptedEventDTO": {
-        "properties": {
-          "proposer_id": {
-            "title": "Proposer Id",
-            "type": "string"
-          },
-          "target_id": {
-            "title": "Target Id",
-            "type": "string"
-          },
-          "trade_id": {
-            "title": "Trade Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "TradeAcceptedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "trade_id",
-          "proposer_id",
-          "target_id"
-        ],
-        "title": "TradeAcceptedEventDTO",
-        "type": "object"
-      },
-      "TradeOfferDTO": {
-        "properties": {
-          "offer_money": {
-            "title": "Offer Money",
-            "type": "integer"
-          },
-          "offer_property_indices": {
-            "items": {
-              "type": "integer"
-            },
-            "title": "Offer Property Indices",
-            "type": "array"
-          },
-          "proposer_id": {
-            "title": "Proposer Id",
-            "type": "string"
-          },
-          "request_money": {
-            "title": "Request Money",
-            "type": "integer"
-          },
-          "request_property_indices": {
-            "items": {
-              "type": "integer"
-            },
-            "title": "Request Property Indices",
-            "type": "array"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "target_id": {
-            "title": "Target Id",
-            "type": "string"
-          },
-          "trade_id": {
-            "title": "Trade Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "trade_id",
-          "proposer_id",
-          "target_id",
-          "offer_property_indices",
-          "offer_money",
-          "request_property_indices",
-          "request_money",
-          "status"
-        ],
-        "title": "TradeOfferDTO",
-        "type": "object"
-      },
-      "TradeProposedEventDTO": {
-        "properties": {
-          "offer_money": {
-            "title": "Offer Money",
-            "type": "integer"
-          },
-          "offer_property_indices": {
-            "items": {
-              "type": "integer"
-            },
-            "title": "Offer Property Indices",
-            "type": "array"
-          },
-          "proposer_id": {
-            "title": "Proposer Id",
-            "type": "string"
-          },
-          "request_money": {
-            "title": "Request Money",
-            "type": "integer"
-          },
-          "request_property_indices": {
-            "items": {
-              "type": "integer"
-            },
-            "title": "Request Property Indices",
-            "type": "array"
-          },
-          "target_id": {
-            "title": "Target Id",
-            "type": "string"
-          },
-          "trade_id": {
-            "title": "Trade Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "TradeProposedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "trade_id",
-          "proposer_id",
-          "target_id",
-          "offer_property_indices",
-          "offer_money",
-          "request_property_indices",
-          "request_money"
-        ],
-        "title": "TradeProposedEventDTO",
-        "type": "object"
-      },
-      "TradeRejectedEventDTO": {
-        "properties": {
-          "proposer_id": {
-            "title": "Proposer Id",
-            "type": "string"
-          },
-          "target_id": {
-            "title": "Target Id",
-            "type": "string"
-          },
-          "trade_id": {
-            "title": "Trade Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "TradeRejectedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "trade_id",
-          "proposer_id",
-          "target_id"
-        ],
-        "title": "TradeRejectedEventDTO",
-        "type": "object"
-      },
-      "TurnEndedEventDTO": {
-        "properties": {
-          "next_player_id": {
-            "title": "Next Player Id",
-            "type": "string"
-          },
-          "player_id": {
-            "title": "Player Id",
-            "type": "string"
-          },
-          "type": {
-            "const": "TurnEndedEvent",
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "player_id",
-          "next_player_id"
-        ],
-        "title": "TurnEndedEventDTO",
+        "title": "GameUpdateMessage",
         "type": "object"
       }
     },
