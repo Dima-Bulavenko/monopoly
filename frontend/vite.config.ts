@@ -1,3 +1,4 @@
+import { heyApiPlugin } from "@hey-api/vite-plugin";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
@@ -9,11 +10,12 @@ const config = defineConfig({
 	resolve: { tsconfigPaths: true },
 	server: {
 		proxy: {
-			"/games": "http://localhost:8000",
+			"/api/v1": "http://localhost:8000",
 			"/ws": { target: "ws://localhost:8000", ws: true },
 		},
 	},
 	plugins: [
+		heyApiPlugin(),
 		devtools(),
 		tailwindcss(),
 		tanstackStart({

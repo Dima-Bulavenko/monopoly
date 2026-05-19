@@ -3,7 +3,7 @@
         db-init \
         be-install be-dev be-test be-test-cov be-lint be-format be-typecheck \
         fe-install fe-dev fe-build fe-lint fe-format \
-        gen-types hooks \
+        gen-types gen-openapi check-openapi hooks \
         dev
 
 BACKEND_DIR  := backend
@@ -83,6 +83,12 @@ hooks: ## Install pre-commit hooks (including pre-push for schema staleness chec
 gen-types: ## Regenerate ws_schema.json and frontend/src/types/ws.ts from Pydantic DTOs
 	cd $(BACKEND_DIR) && uv run python scripts/generate_ws_schema.py > ../ws_schema.json
 	cd $(FRONTEND_DIR) && node scripts/gen-ws-types.mjs
+
+gen-openapi: ## Regenerate frontend/openapi.json from the FastAPI app
+	cd $(BACKEND_DIR) && uv run python scripts/generate_openapi_schema.py > ../$(FRONTEND_DIR)/openapi.json
+
+check-openapi: ## Check that frontend/openapi.json matches the current FastAPI app
+	bash $(BACKEND_DIR)/scripts/check_openapi_schema.sh
 
 # ── Compound ──────────────────────────────────────────────────────────────────
 dev: up db-init ## Start full local dev environment (infra + both servers in parallel)

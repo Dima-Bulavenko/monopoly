@@ -12,7 +12,8 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "openapi-ts": "openapi-ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -41,6 +42,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
+    "@hey-api/openapi-ts": "0.97.2",
+    "@hey-api/vite-plugin": "0.3.1",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "latest",
