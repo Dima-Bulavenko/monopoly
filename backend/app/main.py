@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
+from fastapi.routing import APIRoute
 from mangum import Mangum
 
 from app.api.http.game_router import router as game_router
@@ -19,13 +20,18 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await get_engine().dispose()
 
 
+def custom_generate_unique_id(route: APIRoute):
+    return f"{route.name}"
+
+
 app = FastAPI(
     title="Monopoly API",
+    generate_unique_id_function=custom_generate_unique_id,
     description="API for managing a Monopoly game, including players, properties, and game state.",
     version="0.1.0",
     lifespan=_lifespan,
     # root_path is only needed when behind API Gateway
-    root_path="" if _IS_LOCAL else "/api/v1",
+    root_path="/api/v1",
 )
 
 app.include_router(game_router)
@@ -37,7 +43,9 @@ if _IS_LOCAL:
 
     app.include_router(dev_ws_router)
 
-app.get("/", tags=["health"])(lambda: {"status": "Project is running"})
+app.get("/", tags=["health"], include_in_schema=False)(
+    lambda: {"status": "Project is running"}
+)
 
 # AWS Lambda entry point for HTTP routes (ignored when running with uvicorn locally)
 lambda_handler = Mangum(app, lifespan="off")
