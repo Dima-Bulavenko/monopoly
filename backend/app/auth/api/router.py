@@ -27,7 +27,7 @@ from app.auth.domain.exceptions import (
 from app.config import settings
 
 _COOKIE_NAME = "refresh_token"
-_COOKIE_PATH = "/auth"
+_COOKIE_PATH = "/api/v1/auth"
 _COOKIE_MAX_AGE = settings.refresh_token_expire_days * 86_400
 
 
