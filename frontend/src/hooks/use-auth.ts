@@ -1,19 +1,15 @@
 import { useRouter } from "@tanstack/react-router";
-import { api } from "#/lib/api";
+import { login, logout, register } from "#/client/sdk.gen";
+import type { LoginRequest, RegisterRequest } from "#/client/types.gen";
 import { useAuthStore } from "#/stores/auth.store";
-import type {
-	AccessTokenResponse,
-	LoginRequest,
-	RegisterRequest,
-} from "#/types/api";
 
 export function useLogin() {
 	const setAuth = useAuthStore((s) => s.setAuth);
 	const router = useRouter();
 
 	return async (data: LoginRequest) => {
-		const resp = await api.post<AccessTokenResponse>("/auth/login", data);
-		setAuth(resp.data.access_token);
+		const { data: resp } = await login({ body: data, throwOnError: true });
+		setAuth(resp.access_token);
 		await router.navigate({ to: "/games" });
 	};
 }
@@ -23,8 +19,8 @@ export function useRegister() {
 	const router = useRouter();
 
 	return async (data: RegisterRequest) => {
-		const resp = await api.post<AccessTokenResponse>("/auth/register", data);
-		setAuth(resp.data.access_token);
+		const { data: resp } = await register({ body: data, throwOnError: true });
+		setAuth(resp.access_token);
 		await router.navigate({ to: "/games" });
 	};
 }
@@ -35,7 +31,7 @@ export function useLogout() {
 
 	return async () => {
 		try {
-			await api.post("/auth/logout", undefined, { withCredentials: true });
+			await logout();
 		} catch {
 			// ignore errors on logout
 		}

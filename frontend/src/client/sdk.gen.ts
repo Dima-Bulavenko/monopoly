@@ -3,38 +3,36 @@
 import type { Client, Options as Options2, TDataShape } from "./client";
 import { client } from "./client.gen";
 import type {
-	CreateGameGamesPostData,
-	CreateGameGamesPostErrors,
-	CreateGameGamesPostResponses,
-	GetGameStateGamesGameIdStateGetData,
-	GetGameStateGamesGameIdStateGetErrors,
-	GetGameStateGamesGameIdStateGetResponses,
-	JoinGameGamesGameIdJoinPostData,
-	JoinGameGamesGameIdJoinPostErrors,
-	JoinGameGamesGameIdJoinPostResponses,
-	LambdaGetData,
-	LambdaGetResponses,
-	LoginAppleAuthApplePostData,
-	LoginAppleAuthApplePostErrors,
-	LoginAppleAuthApplePostResponses,
-	LoginAuthLoginPostData,
-	LoginAuthLoginPostErrors,
-	LoginAuthLoginPostResponses,
-	LoginGoogleAuthGooglePostData,
-	LoginGoogleAuthGooglePostErrors,
-	LoginGoogleAuthGooglePostResponses,
-	LogoutAuthLogoutPostData,
-	LogoutAuthLogoutPostErrors,
-	LogoutAuthLogoutPostResponses,
-	RefreshAuthRefreshPostData,
-	RefreshAuthRefreshPostErrors,
-	RefreshAuthRefreshPostResponses,
-	RegisterAuthRegisterPostData,
-	RegisterAuthRegisterPostErrors,
-	RegisterAuthRegisterPostResponses,
-	StartGameGamesGameIdStartPostData,
-	StartGameGamesGameIdStartPostErrors,
-	StartGameGamesGameIdStartPostResponses,
+	CreateGameData,
+	CreateGameErrors,
+	CreateGameResponses,
+	GetGameStateData,
+	GetGameStateErrors,
+	GetGameStateResponses,
+	JoinGameData,
+	JoinGameErrors,
+	JoinGameResponses,
+	LoginAppleData,
+	LoginAppleErrors,
+	LoginAppleResponses,
+	LoginData,
+	LoginErrors,
+	LoginGoogleData,
+	LoginGoogleErrors,
+	LoginGoogleResponses,
+	LoginResponses,
+	LogoutData,
+	LogoutErrors,
+	LogoutResponses,
+	RefreshData,
+	RefreshErrors,
+	RefreshResponses,
+	RegisterData,
+	RegisterErrors,
+	RegisterResponses,
+	StartGameData,
+	StartGameErrors,
+	StartGameResponses,
 } from "./types.gen";
 
 export type Options<
@@ -56,26 +54,14 @@ export type Options<
 };
 
 /**
- * <Lambda>
- */
-export const lambdaGet = <ThrowOnError extends boolean = false>(
-	options?: Options<LambdaGetData, ThrowOnError>,
-) =>
-	(options?.client ?? client).get<LambdaGetResponses, unknown, ThrowOnError>({
-		responseType: "json",
-		url: "/",
-		...options,
-	});
-
-/**
  * Login Apple
  */
-export const loginAppleAuthApplePost = <ThrowOnError extends boolean = false>(
-	options: Options<LoginAppleAuthApplePostData, ThrowOnError>,
+export const loginApple = <ThrowOnError extends boolean = false>(
+	options: Options<LoginAppleData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		LoginAppleAuthApplePostResponses,
-		LoginAppleAuthApplePostErrors,
+		LoginAppleResponses,
+		LoginAppleErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -90,12 +76,12 @@ export const loginAppleAuthApplePost = <ThrowOnError extends boolean = false>(
 /**
  * Login Google
  */
-export const loginGoogleAuthGooglePost = <ThrowOnError extends boolean = false>(
-	options: Options<LoginGoogleAuthGooglePostData, ThrowOnError>,
+export const loginGoogle = <ThrowOnError extends boolean = false>(
+	options: Options<LoginGoogleData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		LoginGoogleAuthGooglePostResponses,
-		LoginGoogleAuthGooglePostErrors,
+		LoginGoogleResponses,
+		LoginGoogleErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -110,14 +96,10 @@ export const loginGoogleAuthGooglePost = <ThrowOnError extends boolean = false>(
 /**
  * Login
  */
-export const loginAuthLoginPost = <ThrowOnError extends boolean = false>(
-	options: Options<LoginAuthLoginPostData, ThrowOnError>,
+export const login = <ThrowOnError extends boolean = false>(
+	options: Options<LoginData, ThrowOnError>,
 ) =>
-	(options.client ?? client).post<
-		LoginAuthLoginPostResponses,
-		LoginAuthLoginPostErrors,
-		ThrowOnError
-	>({
+	(options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
 		responseType: "json",
 		url: "/auth/login",
 		...options,
@@ -130,24 +112,22 @@ export const loginAuthLoginPost = <ThrowOnError extends boolean = false>(
 /**
  * Logout
  */
-export const logoutAuthLogoutPost = <ThrowOnError extends boolean = false>(
-	options?: Options<LogoutAuthLogoutPostData, ThrowOnError>,
+export const logout = <ThrowOnError extends boolean = false>(
+	options?: Options<LogoutData, ThrowOnError>,
 ) =>
-	(options?.client ?? client).post<
-		LogoutAuthLogoutPostResponses,
-		LogoutAuthLogoutPostErrors,
-		ThrowOnError
-	>({ url: "/auth/logout", ...options });
+	(options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>(
+		{ url: "/auth/logout", ...options },
+	);
 
 /**
  * Refresh
  */
-export const refreshAuthRefreshPost = <ThrowOnError extends boolean = false>(
-	options?: Options<RefreshAuthRefreshPostData, ThrowOnError>,
+export const refresh = <ThrowOnError extends boolean = false>(
+	options?: Options<RefreshData, ThrowOnError>,
 ) =>
 	(options?.client ?? client).post<
-		RefreshAuthRefreshPostResponses,
-		RefreshAuthRefreshPostErrors,
+		RefreshResponses,
+		RefreshErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -158,12 +138,12 @@ export const refreshAuthRefreshPost = <ThrowOnError extends boolean = false>(
 /**
  * Register
  */
-export const registerAuthRegisterPost = <ThrowOnError extends boolean = false>(
-	options: Options<RegisterAuthRegisterPostData, ThrowOnError>,
+export const register = <ThrowOnError extends boolean = false>(
+	options: Options<RegisterData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		RegisterAuthRegisterPostResponses,
-		RegisterAuthRegisterPostErrors,
+		RegisterResponses,
+		RegisterErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -178,12 +158,12 @@ export const registerAuthRegisterPost = <ThrowOnError extends boolean = false>(
 /**
  * Create Game
  */
-export const createGameGamesPost = <ThrowOnError extends boolean = false>(
-	options: Options<CreateGameGamesPostData, ThrowOnError>,
+export const createGame = <ThrowOnError extends boolean = false>(
+	options: Options<CreateGameData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		CreateGameGamesPostResponses,
-		CreateGameGamesPostErrors,
+		CreateGameResponses,
+		CreateGameErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -199,14 +179,12 @@ export const createGameGamesPost = <ThrowOnError extends boolean = false>(
 /**
  * Join Game
  */
-export const joinGameGamesGameIdJoinPost = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<JoinGameGamesGameIdJoinPostData, ThrowOnError>,
+export const joinGame = <ThrowOnError extends boolean = false>(
+	options: Options<JoinGameData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		JoinGameGamesGameIdJoinPostResponses,
-		JoinGameGamesGameIdJoinPostErrors,
+		JoinGameResponses,
+		JoinGameErrors,
 		ThrowOnError
 	>({
 		responseType: "json",
@@ -218,14 +196,12 @@ export const joinGameGamesGameIdJoinPost = <
 /**
  * Start Game
  */
-export const startGameGamesGameIdStartPost = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<StartGameGamesGameIdStartPostData, ThrowOnError>,
+export const startGame = <ThrowOnError extends boolean = false>(
+	options: Options<StartGameData, ThrowOnError>,
 ) =>
 	(options.client ?? client).post<
-		StartGameGamesGameIdStartPostResponses,
-		StartGameGamesGameIdStartPostErrors,
+		StartGameResponses,
+		StartGameErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -236,14 +212,12 @@ export const startGameGamesGameIdStartPost = <
 /**
  * Get Game State
  */
-export const getGameStateGamesGameIdStateGet = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<GetGameStateGamesGameIdStateGetData, ThrowOnError>,
+export const getGameState = <ThrowOnError extends boolean = false>(
+	options: Options<GetGameStateData, ThrowOnError>,
 ) =>
 	(options.client ?? client).get<
-		GetGameStateGamesGameIdStateGetResponses,
-		GetGameStateGamesGameIdStateGetErrors,
+		GetGameStateResponses,
+		GetGameStateErrors,
 		ThrowOnError
 	>({
 		responseType: "json",

@@ -188,28 +188,14 @@ export type ErrorResponse = {
 	detail: string;
 };
 
-export type LambdaGetData = {
-	body?: never;
-	path?: never;
-	query?: never;
-	url: "/";
-};
-
-export type LambdaGetResponses = {
-	/**
-	 * Successful Response
-	 */
-	200: unknown;
-};
-
-export type LoginAppleAuthApplePostData = {
+export type LoginAppleData = {
 	body: OAuthLoginRequest;
 	path?: never;
 	query?: never;
 	url: "/auth/apple";
 };
 
-export type LoginAppleAuthApplePostErrors = {
+export type LoginAppleErrors = {
 	/**
 	 * Authentication failed
 	 */
@@ -220,27 +206,25 @@ export type LoginAppleAuthApplePostErrors = {
 	422: HttpValidationError;
 };
 
-export type LoginAppleAuthApplePostError =
-	LoginAppleAuthApplePostErrors[keyof LoginAppleAuthApplePostErrors];
+export type LoginAppleError = LoginAppleErrors[keyof LoginAppleErrors];
 
-export type LoginAppleAuthApplePostResponses = {
+export type LoginAppleResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: AccessTokenResponse;
 };
 
-export type LoginAppleAuthApplePostResponse =
-	LoginAppleAuthApplePostResponses[keyof LoginAppleAuthApplePostResponses];
+export type LoginAppleResponse = LoginAppleResponses[keyof LoginAppleResponses];
 
-export type LoginGoogleAuthGooglePostData = {
+export type LoginGoogleData = {
 	body: OAuthLoginRequest;
 	path?: never;
 	query?: never;
 	url: "/auth/google";
 };
 
-export type LoginGoogleAuthGooglePostErrors = {
+export type LoginGoogleErrors = {
 	/**
 	 * Authentication failed
 	 */
@@ -251,27 +235,26 @@ export type LoginGoogleAuthGooglePostErrors = {
 	422: HttpValidationError;
 };
 
-export type LoginGoogleAuthGooglePostError =
-	LoginGoogleAuthGooglePostErrors[keyof LoginGoogleAuthGooglePostErrors];
+export type LoginGoogleError = LoginGoogleErrors[keyof LoginGoogleErrors];
 
-export type LoginGoogleAuthGooglePostResponses = {
+export type LoginGoogleResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: AccessTokenResponse;
 };
 
-export type LoginGoogleAuthGooglePostResponse =
-	LoginGoogleAuthGooglePostResponses[keyof LoginGoogleAuthGooglePostResponses];
+export type LoginGoogleResponse =
+	LoginGoogleResponses[keyof LoginGoogleResponses];
 
-export type LoginAuthLoginPostData = {
+export type LoginData = {
 	body: LoginRequest;
 	path?: never;
 	query?: never;
 	url: "/auth/login";
 };
 
-export type LoginAuthLoginPostErrors = {
+export type LoginErrors = {
 	/**
 	 * Authentication failed
 	 */
@@ -282,54 +265,50 @@ export type LoginAuthLoginPostErrors = {
 	422: HttpValidationError;
 };
 
-export type LoginAuthLoginPostError =
-	LoginAuthLoginPostErrors[keyof LoginAuthLoginPostErrors];
+export type LoginError = LoginErrors[keyof LoginErrors];
 
-export type LoginAuthLoginPostResponses = {
+export type LoginResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: AccessTokenResponse;
 };
 
-export type LoginAuthLoginPostResponse =
-	LoginAuthLoginPostResponses[keyof LoginAuthLoginPostResponses];
+export type LoginResponse = LoginResponses[keyof LoginResponses];
 
-export type LogoutAuthLogoutPostData = {
+export type LogoutData = {
 	body?: never;
 	path?: never;
 	query?: never;
 	url: "/auth/logout";
 };
 
-export type LogoutAuthLogoutPostErrors = {
+export type LogoutErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type LogoutAuthLogoutPostError =
-	LogoutAuthLogoutPostErrors[keyof LogoutAuthLogoutPostErrors];
+export type LogoutError = LogoutErrors[keyof LogoutErrors];
 
-export type LogoutAuthLogoutPostResponses = {
+export type LogoutResponses = {
 	/**
 	 * Successful Response
 	 */
 	204: void;
 };
 
-export type LogoutAuthLogoutPostResponse =
-	LogoutAuthLogoutPostResponses[keyof LogoutAuthLogoutPostResponses];
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
 
-export type RefreshAuthRefreshPostData = {
+export type RefreshData = {
 	body?: never;
 	path?: never;
 	query?: never;
 	url: "/auth/refresh";
 };
 
-export type RefreshAuthRefreshPostErrors = {
+export type RefreshErrors = {
 	/**
 	 * Refresh token expired or invalid
 	 */
@@ -340,27 +319,25 @@ export type RefreshAuthRefreshPostErrors = {
 	422: HttpValidationError;
 };
 
-export type RefreshAuthRefreshPostError =
-	RefreshAuthRefreshPostErrors[keyof RefreshAuthRefreshPostErrors];
+export type RefreshError = RefreshErrors[keyof RefreshErrors];
 
-export type RefreshAuthRefreshPostResponses = {
+export type RefreshResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: AccessTokenResponse;
 };
 
-export type RefreshAuthRefreshPostResponse =
-	RefreshAuthRefreshPostResponses[keyof RefreshAuthRefreshPostResponses];
+export type RefreshResponse = RefreshResponses[keyof RefreshResponses];
 
-export type RegisterAuthRegisterPostData = {
+export type RegisterData = {
 	body: RegisterRequest;
 	path?: never;
 	query?: never;
 	url: "/auth/register";
 };
 
-export type RegisterAuthRegisterPostErrors = {
+export type RegisterErrors = {
 	/**
 	 * Email already registered
 	 */
@@ -371,47 +348,43 @@ export type RegisterAuthRegisterPostErrors = {
 	422: HttpValidationError;
 };
 
-export type RegisterAuthRegisterPostError =
-	RegisterAuthRegisterPostErrors[keyof RegisterAuthRegisterPostErrors];
+export type RegisterError = RegisterErrors[keyof RegisterErrors];
 
-export type RegisterAuthRegisterPostResponses = {
+export type RegisterResponses = {
 	/**
 	 * Successful Response
 	 */
 	201: AccessTokenResponse;
 };
 
-export type RegisterAuthRegisterPostResponse =
-	RegisterAuthRegisterPostResponses[keyof RegisterAuthRegisterPostResponses];
+export type RegisterResponse = RegisterResponses[keyof RegisterResponses];
 
-export type CreateGameGamesPostData = {
+export type CreateGameData = {
 	body: CreateGameRequest;
 	path?: never;
 	query?: never;
 	url: "/games/";
 };
 
-export type CreateGameGamesPostErrors = {
+export type CreateGameErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type CreateGameGamesPostError =
-	CreateGameGamesPostErrors[keyof CreateGameGamesPostErrors];
+export type CreateGameError = CreateGameErrors[keyof CreateGameErrors];
 
-export type CreateGameGamesPostResponses = {
+export type CreateGameResponses = {
 	/**
 	 * Successful Response
 	 */
 	201: GameResponse;
 };
 
-export type CreateGameGamesPostResponse =
-	CreateGameGamesPostResponses[keyof CreateGameGamesPostResponses];
+export type CreateGameResponse = CreateGameResponses[keyof CreateGameResponses];
 
-export type JoinGameGamesGameIdJoinPostData = {
+export type JoinGameData = {
 	body?: never;
 	path: {
 		/**
@@ -423,27 +396,25 @@ export type JoinGameGamesGameIdJoinPostData = {
 	url: "/games/{game_id}/join";
 };
 
-export type JoinGameGamesGameIdJoinPostErrors = {
+export type JoinGameErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type JoinGameGamesGameIdJoinPostError =
-	JoinGameGamesGameIdJoinPostErrors[keyof JoinGameGamesGameIdJoinPostErrors];
+export type JoinGameError = JoinGameErrors[keyof JoinGameErrors];
 
-export type JoinGameGamesGameIdJoinPostResponses = {
+export type JoinGameResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: GameResponse;
 };
 
-export type JoinGameGamesGameIdJoinPostResponse =
-	JoinGameGamesGameIdJoinPostResponses[keyof JoinGameGamesGameIdJoinPostResponses];
+export type JoinGameResponse = JoinGameResponses[keyof JoinGameResponses];
 
-export type StartGameGamesGameIdStartPostData = {
+export type StartGameData = {
 	body?: never;
 	path: {
 		/**
@@ -455,27 +426,25 @@ export type StartGameGamesGameIdStartPostData = {
 	url: "/games/{game_id}/start";
 };
 
-export type StartGameGamesGameIdStartPostErrors = {
+export type StartGameErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type StartGameGamesGameIdStartPostError =
-	StartGameGamesGameIdStartPostErrors[keyof StartGameGamesGameIdStartPostErrors];
+export type StartGameError = StartGameErrors[keyof StartGameErrors];
 
-export type StartGameGamesGameIdStartPostResponses = {
+export type StartGameResponses = {
 	/**
 	 * Successful Response
 	 */
 	204: void;
 };
 
-export type StartGameGamesGameIdStartPostResponse =
-	StartGameGamesGameIdStartPostResponses[keyof StartGameGamesGameIdStartPostResponses];
+export type StartGameResponse = StartGameResponses[keyof StartGameResponses];
 
-export type GetGameStateGamesGameIdStateGetData = {
+export type GetGameStateData = {
 	body?: never;
 	path: {
 		/**
@@ -487,22 +456,21 @@ export type GetGameStateGamesGameIdStateGetData = {
 	url: "/games/{game_id}/state";
 };
 
-export type GetGameStateGamesGameIdStateGetErrors = {
+export type GetGameStateErrors = {
 	/**
 	 * Validation Error
 	 */
 	422: HttpValidationError;
 };
 
-export type GetGameStateGamesGameIdStateGetError =
-	GetGameStateGamesGameIdStateGetErrors[keyof GetGameStateGamesGameIdStateGetErrors];
+export type GetGameStateError = GetGameStateErrors[keyof GetGameStateErrors];
 
-export type GetGameStateGamesGameIdStateGetResponses = {
+export type GetGameStateResponses = {
 	/**
 	 * Successful Response
 	 */
 	200: GameStateResponse;
 };
 
-export type GetGameStateGamesGameIdStateGetResponse =
-	GetGameStateGamesGameIdStateGetResponses[keyof GetGameStateGamesGameIdStateGetResponses];
+export type GetGameStateResponse =
+	GetGameStateResponses[keyof GetGameStateResponses];

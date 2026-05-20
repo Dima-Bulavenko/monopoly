@@ -267,28 +267,9 @@
   },
   "openapi": "3.1.0",
   "paths": {
-    "/": {
-      "get": {
-        "operationId": "_lambda___get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "<Lambda>",
-        "tags": [
-          "health"
-        ]
-      }
-    },
     "/auth/apple": {
       "post": {
-        "operationId": "login_apple_auth_apple_post",
+        "operationId": "login_apple",
         "requestBody": {
           "content": {
             "application/json": {
@@ -339,7 +320,7 @@
     },
     "/auth/google": {
       "post": {
-        "operationId": "login_google_auth_google_post",
+        "operationId": "login_google",
         "requestBody": {
           "content": {
             "application/json": {
@@ -390,7 +371,7 @@
     },
     "/auth/login": {
       "post": {
-        "operationId": "login_auth_login_post",
+        "operationId": "login",
         "requestBody": {
           "content": {
             "application/json": {
@@ -441,7 +422,7 @@
     },
     "/auth/logout": {
       "post": {
-        "operationId": "logout_auth_logout_post",
+        "operationId": "logout",
         "parameters": [
           {
             "in": "cookie",
@@ -483,7 +464,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "operationId": "refresh_auth_refresh_post",
+        "operationId": "refresh",
         "parameters": [
           {
             "in": "cookie",
@@ -542,7 +523,7 @@
     },
     "/auth/register": {
       "post": {
-        "operationId": "register_auth_register_post",
+        "operationId": "register",
         "requestBody": {
           "content": {
             "application/json": {
@@ -593,7 +574,7 @@
     },
     "/games/": {
       "post": {
-        "operationId": "create_game_games__post",
+        "operationId": "create_game",
         "requestBody": {
           "content": {
             "application/json": {
@@ -639,7 +620,7 @@
     },
     "/games/{game_id}/join": {
       "post": {
-        "operationId": "join_game_games__game_id__join_post",
+        "operationId": "join_game",
         "parameters": [
           {
             "in": "path",
@@ -686,7 +667,7 @@
     },
     "/games/{game_id}/start": {
       "post": {
-        "operationId": "start_game_games__game_id__start_post",
+        "operationId": "start_game",
         "parameters": [
           {
             "in": "path",
@@ -726,7 +707,7 @@
     },
     "/games/{game_id}/state": {
       "get": {
-        "operationId": "get_game_state_games__game_id__state_get",
+        "operationId": "get_game_state",
         "parameters": [
           {
             "in": "path",
