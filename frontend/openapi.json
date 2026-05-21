@@ -82,6 +82,10 @@
             "title": "Game Id",
             "type": "string"
           },
+          "max_players": {
+            "title": "Max Players",
+            "type": "integer"
+          },
           "phase": {
             "title": "Phase",
             "type": "string"
@@ -114,7 +118,8 @@
           "current_player_id",
           "players",
           "properties",
-          "free_parking_pot"
+          "free_parking_pot",
+          "max_players"
         ],
         "title": "GameStateResponse",
         "type": "object"

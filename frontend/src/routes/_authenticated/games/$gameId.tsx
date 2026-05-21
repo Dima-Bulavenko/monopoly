@@ -9,6 +9,7 @@ import { useGameState, useJoinGame, useStartGame } from "#/hooks/use-game";
 import { useGameWebSocket } from "#/hooks/use-game-ws";
 import { useAuthStore } from "#/stores/auth.store";
 import { useGameStore } from "#/stores/game.store";
+import type { GameStatePlayer, GameStateProperty } from "#/types/api";
 
 export const Route = createFileRoute("/_authenticated/games/$gameId")({
 	component: GameRoom,
@@ -143,7 +144,9 @@ function GameRoom() {
 
 	// ---- FINISHED VIEW ----
 	if (isFinished) {
-		const winner = wsGameState?.players.find((p) => !p.is_bankrupt);
+		const winner = wsGameState?.players.find(
+			(p: GameStatePlayer) => !p.is_bankrupt,
+		);
 		return (
 			<div className="flex min-h-[80vh] flex-col items-center justify-center gap-4 text-center">
 				<h1 className="text-4xl font-bold text-gray-900">🏆 Game Over!</h1>
@@ -185,7 +188,9 @@ function GameRoom() {
 
 	// Normalize properties to include square_index from key
 	const normalizedProperties = Object.fromEntries(
-		Object.entries(wsGameState.properties).map(([key, val]) => [
+		Object.entries(
+			wsGameState.properties as Record<string, GameStateProperty>,
+		).map(([key, val]) => [
 			key,
 			{ ...val, square_index: val.square_index ?? Number(key) },
 		]),

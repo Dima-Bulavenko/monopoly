@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, Trophy } from "lucide-react";
 import { Button } from "#/components/ui/button";
-import { useLogout } from "#/hooks/use-auth";
+import { useLogout } from "#/features/auth/hooks";
 import { useAuthStore } from "#/stores/auth.store";
 
 export function Header() {
@@ -28,7 +28,7 @@ export function Header() {
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={logout}
+							onClick={() => logout.mutate()}
 							className="flex items-center gap-1.5"
 						>
 							<LogOut size={14} />

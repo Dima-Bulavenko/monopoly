@@ -5,14 +5,14 @@ import { z } from "zod";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
-import { useLogin } from "#/hooks/use-auth";
+import { useLogin } from "#/features/auth/hooks";
 
 export const Route = createFileRoute("/auth/login")({
 	component: LoginPage,
 });
 
 const schema = z.object({
-	email: z.string().email("Invalid email"),
+	email: z.email("Invalid email"),
 	password: z.string().min(1, "Password required"),
 });
 
@@ -28,7 +28,7 @@ function LoginPage() {
 		onSubmit: async ({ value }) => {
 			setServerError(null);
 			try {
-				await login(value);
+				await login.mutateAsync(value);
 			} catch (err: unknown) {
 				const msg =
 					err instanceof Error

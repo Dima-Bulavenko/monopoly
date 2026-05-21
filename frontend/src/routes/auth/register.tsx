@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
-import { useRegister } from "#/hooks/use-auth";
+import { useRegister } from "#/features/auth/hooks";
 
 export const Route = createFileRoute("/auth/register")({
 	component: RegisterPage,
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/auth/register")({
 
 const schema = z.object({
 	display_name: z.string().min(2, "Name must be at least 2 characters"),
-	email: z.string().email("Invalid email"),
+	email: z.email("Invalid email"),
 	password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -27,7 +27,7 @@ function RegisterPage() {
 		onSubmit: async ({ value }) => {
 			setServerError(null);
 			try {
-				await register(value);
+				await register.mutateAsync(value);
 			} catch (err: unknown) {
 				const msg =
 					err instanceof Error

@@ -115,4 +115,5 @@ async def get_game_state(
             for k, v in game.properties.items()
         },
         free_parking_pot=game.free_parking_pot,
+        max_players=game.max_players,
     )

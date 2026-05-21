@@ -24,3 +24,4 @@ class GameStateResponse(BaseModel):
     players: list[dict]
     properties: dict[str, dict]
     free_parking_pot: int
+    max_players: int
