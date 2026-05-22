@@ -15,7 +15,8 @@
 			"!**/src/routeTree.gen.ts",
 			"!**/src/styles.css",
 			"!**/*.gen.ts",
-			"!**/src/types/**/*"
+			"!**/src/types/**/*",
+			"!**/src/components/ui/**/*"
 		]
 	},
 	"formatter": {
