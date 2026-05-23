@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import RegisterForm from "#/features/auth/ui/RegisterForm";
+import { createFileRoute } from "@tanstack/react-router";
+import { RegisterForm } from "#/features/auth/ui/RegisterForm";
 
 export const Route = createFileRoute("/auth/register")({
 	component: RegisterPage,
@@ -7,22 +7,9 @@ export const Route = createFileRoute("/auth/register")({
 
 function RegisterPage() {
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-gray-50">
-			<div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-				<h1 className="mb-6 text-2xl font-bold text-gray-900">
-					Create account
-				</h1>
+		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+			<div className="flex w-full max-w-sm flex-col gap-6">
 				<RegisterForm />
-
-				<p className="mt-4 text-center text-sm text-gray-500">
-					Already have an account?{" "}
-					<Link
-						to="/auth/login"
-						className="font-medium text-blue-600 hover:underline"
-					>
-						Sign in
-					</Link>
-				</p>
 			</div>
 		</div>
 	);

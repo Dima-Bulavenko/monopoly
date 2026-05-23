@@ -1,122 +1,16 @@
-import { useForm } from "@tanstack/react-form";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { z } from "zod";
-import { Button } from "#/components/ui/button";
-import { Input } from "#/components/ui/input";
-import { Label } from "#/components/ui/label";
-import { useLogin } from "#/features/auth/hooks";
+import { createFileRoute } from "@tanstack/react-router";
+import { LoginForm } from "#/features/auth/ui/LoginForm";
+// import LoginForm from "#/features/auth/ui/LoginForm";
 
 export const Route = createFileRoute("/auth/login")({
 	component: LoginPage,
 });
 
-const schema = z.object({
-	email: z.email("Invalid email"),
-	password: z.string().min(1, "Password required"),
-});
-
 function LoginPage() {
-	const login = useLogin();
-	const [serverError, setServerError] = useState<string | null>(null);
-
-	const form = useForm({
-		defaultValues: { email: "", password: "" },
-		validators: {
-			onSubmit: schema,
-		},
-		onSubmit: async ({ value }) => {
-			setServerError(null);
-			try {
-				await login.mutateAsync(value);
-			} catch (err: unknown) {
-				const msg =
-					err instanceof Error
-						? err.message
-						: "Login failed. Please try again.";
-				setServerError(msg);
-			}
-		},
-	});
-
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-gray-50">
-			<div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-				<h1 className="mb-6 text-2xl font-bold text-gray-900">Sign in</h1>
-
-				{serverError && (
-					<p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
-						{serverError}
-					</p>
-				)}
-
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						form.handleSubmit();
-					}}
-					className="space-y-4"
-				>
-					<form.Field name="email">
-						{(field) => (
-							<div className="space-y-1">
-								<Label htmlFor={field.name}>Email</Label>
-								<Input
-									id={field.name}
-									type="email"
-									autoComplete="email"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								{field.state.meta.errors[0] && (
-									<p className="text-xs text-red-500">
-										{field.state.meta.errors[0].message}
-									</p>
-								)}
-							</div>
-						)}
-					</form.Field>
-
-					<form.Field name="password">
-						{(field) => (
-							<div className="space-y-1">
-								<Label htmlFor={field.name}>Password</Label>
-								<Input
-									id={field.name}
-									type="password"
-									autoComplete="current-password"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								{field.state.meta.errors[0] && (
-									<p className="text-xs text-red-500">
-										{field.state.meta.errors[0].message}
-									</p>
-								)}
-							</div>
-						)}
-					</form.Field>
-
-					<form.Subscribe selector={(s) => s.isSubmitting}>
-						{(isSubmitting) => (
-							<Button type="submit" className="w-full" disabled={isSubmitting}>
-								{isSubmitting ? "Signing in…" : "Sign in"}
-							</Button>
-						)}
-					</form.Subscribe>
-				</form>
-
-				<p className="mt-4 text-center text-sm text-gray-500">
-					No account?{" "}
-					<Link
-						to="/auth/register"
-						className="font-medium text-blue-600 hover:underline"
-					>
-						Register
-					</Link>
-				</p>
+		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+			<div className="flex w-full max-w-sm flex-col gap-6">
+				<LoginForm />
 			</div>
 		</div>
 	);

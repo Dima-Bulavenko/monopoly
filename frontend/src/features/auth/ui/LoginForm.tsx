@@ -1,6 +1,6 @@
 import { formOptions } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
-import * as z from "zod";
+import z from "zod";
 import {
 	Card,
 	CardContent,
@@ -13,43 +13,40 @@ import {
 	FieldDescription,
 	FieldGroup,
 	FieldSeparator,
-} from "#/components/ui/field";
+} from "#/components/ui/field.tsx";
 import { useAppForm } from "#/hooks/form";
 import { cn } from "#/lib/utils.ts";
-import { useRegister } from "../hooks/use-register.ts";
+import { useLogin } from "../hooks/use-login.ts";
 import { AppleAuthButton } from "./AppleAuthButton.tsx";
 import { GoogleAuthButton } from "./GoogleAuthButton.tsx";
 
-const registerFormSchema = z.object({
-	username: z.string().min(3, "Username must be at least 3 characters"),
+const loginFormSchema = z.object({
 	email: z.email("Invalid email address"),
-	password: z.string().min(6, "Password must be at least 6 characters"),
+	password: z.string().min(1, "Password required"),
 });
 
-const defaultValues: z.infer<typeof registerFormSchema> = {
-	username: "",
+const defaultValues: z.infer<typeof loginFormSchema> = {
 	email: "",
 	password: "",
 };
 
-const registerFormOpts = formOptions({
+const formOpts = formOptions({
 	defaultValues,
 	validators: {
-		onBlur: registerFormSchema,
+		onSubmit: loginFormSchema,
 	},
 });
 
-export function RegisterForm({
+export function LoginForm({
 	className,
 	...props
 }: React.ComponentProps<"div">) {
-	const register = useRegister();
+	const login = useLogin();
 	const form = useAppForm({
-		...registerFormOpts,
+		...formOpts,
 		onSubmit: ({ value }) => {
-			return register
+			return login
 				.mutateAsync({
-					display_name: value.username,
 					email: value.email,
 					password: value.password,
 				})
@@ -60,9 +57,9 @@ export function RegisterForm({
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Create an account</CardTitle>
+					<CardTitle className="text-xl">Welcome back</CardTitle>
 					<CardDescription>
-						Sign up with your Apple or Google account
+						Login with your Apple or Google account
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -74,35 +71,35 @@ export function RegisterForm({
 					>
 						<FieldGroup>
 							<Field>
-								<AppleAuthButton
-									onClick={() => {}}
-									label="Sign up with Apple"
-								/>
-								<GoogleAuthButton
-									onClick={() => {}}
-									label="Sign up with Google"
-								/>
+								<AppleAuthButton onClick={() => {}} />
+								<GoogleAuthButton onClick={() => {}} />
 							</Field>
 							<FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
 								Or continue with
 							</FieldSeparator>
-							<form.AppField name="username">
-								{(field) => <field.TextField id="username" label="Username" />}
-							</form.AppField>
 							<form.AppField name="email">
 								{(field) => <field.EmailField id="email" label="Email" />}
 							</form.AppField>
 							<form.AppField name="password">
 								{(field) => (
-									<field.PasswordField id="password" label="Password" />
+									<div>
+										<field.PasswordField id="password" label="Password" />
+										<a
+											href="notimplemented"
+											className="ml-auto text-sm underline-offset-4 hover:underline"
+										>
+											Forgot your password?
+										</a>
+									</div>
 								)}
 							</form.AppField>
 							<Field>
 								<form.AppForm>
-									<form.SubmitButton label="Create account" />
+									<form.SubmitButton label="Login" />
 								</form.AppForm>
 								<FieldDescription className="text-center">
-									Already have an account? <Link to="/auth/login">Sign in</Link>
+									Don&apos;t have an account?{" "}
+									<Link to="/auth/register">Sign up</Link>
 								</FieldDescription>
 							</Field>
 						</FieldGroup>
