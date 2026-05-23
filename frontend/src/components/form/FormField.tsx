@@ -27,12 +27,7 @@ export default function FormField({
 			<FieldLabel htmlFor={id}>{label}</FieldLabel>
 			{children}
 			{description && <FieldDescription>{description}</FieldDescription>}
-			<FieldError>
-				{!isValid &&
-					errors.map((error, _i) => (
-						<div key={error.message}>{error.message}</div>
-					))}
-			</FieldError>
+			{!isValid && <FieldError errors={errors} />}
 		</Field>
 	);
 }
