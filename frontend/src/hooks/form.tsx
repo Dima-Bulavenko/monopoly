@@ -6,6 +6,9 @@ const TextField = lazy(() => import("#/components/form/TextField"));
 const EmailField = lazy(() => import("#/components/form/EmailField"));
 const PasswordField = lazy(() => import("#/components/form/PasswordField"));
 const SubmitButton = lazy(() => import("#/components/form/SubmitButton"));
+const PlayersNumberField = lazy(
+	() => import("#/features/game/ui/PlayersNumberField"),
+);
 
 export const { useAppForm, withFieldGroup, withForm } = createFormHook({
 	fieldContext,
@@ -14,6 +17,7 @@ export const { useAppForm, withFieldGroup, withForm } = createFormHook({
 		TextField,
 		PasswordField,
 		EmailField,
+		PlayersNumberField,
 	},
 	formComponents: {
 		SubmitButton,
