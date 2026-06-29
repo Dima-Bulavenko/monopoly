@@ -22,6 +22,8 @@ from app.application.dto.websocket_dto import (
     BuildHouseMessage,
     DeclareBankruptcyMessage,
     EndTurnMessage,
+    GameUpdateMessage,
+    GetLobbyStateMessage,
     InboundAdapter,
     MortgagePropertyMessage,
     PassPropertyMessage,
@@ -33,6 +35,7 @@ from app.application.dto.websocket_dto import (
     SellHouseMessage,
     UnmortgagePropertyMessage,
     UseJailCardMessage,
+    game_to_dto,
 )
 from app.application.game_service import GameService
 from app.domain.exceptions import DomainError
@@ -59,6 +62,37 @@ from app.domain.game.commands import (
 from app.infrastructure.db.connection_repository import ConnectionRepository
 from app.infrastructure.db.game_repository import GameNotFoundError, GameRepository
 from app.infrastructure.websocket.broadcaster import WebSocketBroadcaster
+
+
+async def _push_game_state_to_connection(conn_id: str, game_id: str) -> None:
+    """Unicast current game state to a single WebSocket connection (best-effort)."""
+    import aioboto3
+
+    from app.config import settings
+
+    game_svc, _ = _make_services()
+    try:
+        game = await game_svc.get_game_state(game_id)
+    except Exception:
+        return
+
+    message = GameUpdateMessage(
+        type="game_update",
+        events=[],
+        state=game_to_dto(game),
+    )
+    payload = message.model_dump_json().encode()
+
+    session = aioboto3.Session()
+    async with session.client(
+        "apigatewaymanagementapi",
+        endpoint_url=settings.apigw_management_endpoint,
+        region_name=settings.aws_region,
+    ) as apigw:
+        try:
+            await apigw.post_to_connection(ConnectionId=conn_id, Data=payload)
+        except Exception:
+            pass  # Connection not yet fully open or already gone
 
 
 def _make_services() -> tuple[GameService, ConnectionService]:
@@ -98,6 +132,12 @@ async def connect_handler(event: dict, context: object) -> dict:
     conn_id = event["requestContext"]["connectionId"]
     _, conn_svc = _make_services()
     await conn_svc.on_connect(conn_id, game_id, player_id)
+
+    # Best-effort: push current game state so the client renders lobby immediately.
+    # API Gateway may reject post_to_connection during $connect; client can
+    # always recover by sending {"action": "get_lobby_state"}.
+    await _push_game_state_to_connection(conn_id, game_id)
+
     return _ok()
 
 
@@ -131,6 +171,11 @@ async def action_handler(event: dict, context: object) -> dict:
 
     game_id: str = meta["game_id"]
     player_id: str = meta["player_id"]
+
+    # Handle lobby-state request before dispatching game commands.
+    if isinstance(msg, GetLobbyStateMessage):
+        await _push_game_state_to_connection(conn_id, game_id)
+        return _ok()
 
     try:
         command = _build_command(msg, player_id)

@@ -104,6 +104,12 @@ class DeclareBankruptcyMessage(_InboundBase):
     action: Literal["declare_bankruptcy"] = "declare_bankruptcy"
 
 
+class GetLobbyStateMessage(_InboundBase):
+    """Client sends this after connecting to receive the current game/lobby state."""
+
+    action: Literal["get_lobby_state"] = "get_lobby_state"
+
+
 _InboundUnion = Annotated[
     RollDiceMessage
     | BuyPropertyMessage
@@ -122,7 +128,8 @@ _InboundUnion = Annotated[
     | ProposeTradeMessage
     | AcceptTradeMessage
     | RejectTradeMessage
-    | DeclareBankruptcyMessage,
+    | DeclareBankruptcyMessage
+    | GetLobbyStateMessage,
     Field(discriminator="action"),
 ]
 
