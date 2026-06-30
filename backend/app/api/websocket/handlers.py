@@ -9,6 +9,7 @@ Routes:
 """
 
 from __future__ import annotations
+from typing import cast
 
 import json
 
@@ -169,8 +170,8 @@ async def action_handler(event: dict, context: object) -> dict:
     if not meta:
         return _err(403, "Unknown connection")
 
-    game_id: str = meta["game_id"]
-    player_id: str = meta["player_id"]
+    game_id = cast(str, meta["game_id"])
+    player_id = cast(str, meta["player_id"])
 
     # Handle lobby-state request before dispatching game commands.
     if isinstance(msg, GetLobbyStateMessage):

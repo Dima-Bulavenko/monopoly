@@ -278,7 +278,7 @@ dev = [
     { name = "ruff" },
     { name = "scalene" },
     { name = "ty" },
-    { name = "types-aioboto3", extra = ["dynamodb"] },
+    { name = "types-aioboto3", extra = ["apigatewaymanagementapi", "dynamodb"] },
 ]
 
 [package.metadata]
@@ -308,7 +308,7 @@ dev = [
     { name = "ruff", specifier = ">=0.15.12" },
     { name = "scalene", specifier = ">=2.2.1" },
     { name = "ty", specifier = ">=0.0.32" },
-    { name = "types-aioboto3", extras = ["dynamodb"], specifier = ">=15.5.0" },
+    { name = "types-aioboto3", extras = ["apigatewaymanagementapi", "dynamodb"], specifier = ">=15.5.0" },
 ]
 
 [[package]]
@@ -1712,6 +1712,9 @@ wheels = [
 ]
 
 [package.optional-dependencies]
+apigatewaymanagementapi = [
+    { name = "types-aiobotocore-apigatewaymanagementapi" },
+]
 dynamodb = [
     { name = "types-aiobotocore-dynamodb" },
 ]
@@ -1726,6 +1729,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b9/e4/5dd83c879eff726931ef222d3ae27f67999c3bc33dfae1ca8237ebccdf17/types_aiobotocore-3.6.0.tar.gz", hash = "sha256:e990056ce9d19094a9d9b36008ca0b2a4d69948ff58f50868dd159a81f6ad69c", size = 87978, upload-time = "2026-05-02T03:05:30.694Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/19/7c/cadd4b4d0bdd6f1cbc601177a115966dabd9afa022287f3f25423274ab97/types_aiobotocore-3.6.0-py3-none-any.whl", hash = "sha256:e38d5340bfb7ecc17a40acfd1043f4ed91af9f8189daa5e438bda2e7d276d406", size = 54805, upload-time = "2026-05-02T03:05:27.911Z" },
+]
+
+[[package]]
+name = "types-aiobotocore-apigatewaymanagementapi"
+version = "2.25.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/35/38050da600f22adb58171a3d67044bc8a0e9373c5f4fe52a4946b97dd42d/types_aiobotocore_apigatewaymanagementapi-2.25.2.tar.gz", hash = "sha256:cf0f07be8ce4c3909554d2e49d4450942c563e3ff9e0f52dbd1449b193d4a642", size = 15237, upload-time = "2025-11-12T01:40:40.077Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/81/c854d75dd2974cd167f716061b70d94f8433cffb1053e4f75966df38e22e/types_aiobotocore_apigatewaymanagementapi-2.25.2-py3-none-any.whl", hash = "sha256:2aa30275dc6669a5f9997e456e0f9b277f880458447ba8ad9fd0184eba9d69c5", size = 18737, upload-time = "2025-11-12T01:40:37.775Z" },
 ]
 
 [[package]]

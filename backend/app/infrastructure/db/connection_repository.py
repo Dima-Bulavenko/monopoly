@@ -6,6 +6,7 @@ Single-table design (two access patterns):
 """
 
 from __future__ import annotations
+from typing import cast
 
 from datetime import datetime, timezone
 
@@ -68,7 +69,7 @@ class ConnectionRepository:
             )
         return [
             {
-                "connection_id": item["SK"].replace("CONNECTION#", ""),
+                "connection_id": cast(str, item["SK"]).replace("CONNECTION#", ""),
                 "player_id": item["player_id"],
             }
             for item in resp.get("Items", [])
