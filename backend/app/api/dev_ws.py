@@ -1,105 +1,72 @@
-"""FastAPI WebSocket router for local development.
+"""FastAPI WebSocket transport adapter for local development.
 
-Replaces API Gateway WebSocket in dev.  The frontend connects to:
-  ws://localhost:8001/ws/{game_id}?token={access_token}
+This module is the **transport layer only** — it bridges FastAPI's WebSocket
+lifecycle events to the application-level ``WebSocketAppHandler``.
 
-Messages from client:  {"action": "roll_dice", "payload": {}}
-Messages to client:    {"type": "game_update", "events": [...], "state": {...}}
+Business logic lives in ``WebSocketAppHandler`` and the action callbacks
+registered on it.  To add a new feature, register its action handlers at the
+bottom of this file:
+
+    from app.features.my_feature.ws import register_actions
+    register_actions(_handler)
 """
 
 from __future__ import annotations
 
-import json
+import uuid
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from app.api.websocket.handlers import _build_command
-from app.application.dto.websocket_dto import (
-    GameUpdateMessage,
-    GetLobbyStateMessage,
-    InboundAdapter,
-    game_to_dto,
-)
-from app.application.game_service import GameService
+from app.application.ws_handler import WebSocketAppHandler
 from app.auth.infrastructure.jwt.rs256_service import make_verifier
-from app.domain.exceptions import DomainError
-from app.infrastructure.db.game_repository import GameNotFoundError, GameRepository
-from app.infrastructure.websocket.local_broadcaster import (
-    LocalWebSocketBroadcaster,
-    local_manager,
+from app.infrastructure.websocket.local_connection_store import InMemoryConnectionStore
+from app.infrastructure.websocket.local_sender import (
+    LocalConnectionRegistry,
+    LocalWebSocketSender,
 )
 
 router = APIRouter(tags=["dev-websocket"])
 
+# ---------------------------------------------------------------------------
+# Process-level singletons (created once; shared across all connections).
+# ---------------------------------------------------------------------------
+_registry = LocalConnectionRegistry()
+_sender = LocalWebSocketSender(_registry)
+_store = InMemoryConnectionStore()
+_handler = WebSocketAppHandler(
+    sender=_sender,
+    verifier=make_verifier(),
+    store=_store,
+)
 
-def _make_game_service() -> GameService:
-    repo = GameRepository()
-    broadcaster = LocalWebSocketBroadcaster()
-    return GameService(repo, broadcaster)
+# ---------------------------------------------------------------------------
+# Register feature action handlers here.
+# ---------------------------------------------------------------------------
+# Example:
+#   from app.features.game.ws_actions import register_game_actions
+#   register_game_actions(_handler)
 
 
-@router.websocket("/ws/{game_id}")
-async def websocket_endpoint(ws: WebSocket, game_id: str, token: str) -> None:
+# ---------------------------------------------------------------------------
+# Transport adapter — do not add business logic below this line.
+# ---------------------------------------------------------------------------
+
+
+@router.websocket("/ws")
+async def websocket_endpoint(ws: WebSocket) -> None:
+    """Accept a WebSocket connection and drive the application handler."""
+    connection_id = str(uuid.uuid4())
+    params: dict[str, str] = dict(ws.query_params)
+
+    await ws.accept()
+    _registry.register(connection_id, ws)
+
     try:
-        payload = make_verifier().verify(token)
-    except ValueError:
-        await ws.close(code=1008)  # Policy Violation — invalid/expired token
-        return
-    player_id: str = payload["sub"]
-    await local_manager.connect(game_id, player_id, ws)
-
-    # Push current game state immediately so the client can render the lobby
-    # without waiting for another player to join.
-    svc = _make_game_service()
-    try:
-        game = await svc.get_game_state(game_id)
-        init_msg = GameUpdateMessage(
-            type="game_update", events=[], state=game_to_dto(game)
-        )
-        await ws.send_text(init_msg.model_dump_json())
-    except GameNotFoundError:
-        await ws.close(code=4004)
-        return
-
-    try:
-        while True:
-            raw = await ws.receive_text()
-            try:
-                body = json.loads(raw)
-                msg = InboundAdapter.validate_python(body)
-            except (KeyError, ValueError) as exc:
-                await ws.send_text(json.dumps({"type": "error", "message": str(exc)}))
-                continue
-
-            if isinstance(msg, GetLobbyStateMessage):
-                svc = _make_game_service()
-                try:
-                    game = await svc.get_game_state(game_id)
-                    resp = GameUpdateMessage(
-                        type="game_update", events=[], state=game_to_dto(game)
-                    )
-                    await ws.send_text(resp.model_dump_json())
-                except GameNotFoundError:
-                    await ws.send_text(
-                        json.dumps({"type": "error", "message": "Game not found"})
-                    )
-                continue
-
-            try:
-                command = _build_command(msg, player_id)
-            except (KeyError, ValueError) as exc:
-                await ws.send_text(json.dumps({"type": "error", "message": str(exc)}))
-                continue
-
-            svc = _make_game_service()
-            try:
-                await svc.handle_action(game_id, command)
-            except GameNotFoundError:
-                await ws.send_text(
-                    json.dumps({"type": "error", "message": "Game not found"})
-                )
-            except DomainError as exc:
-                await ws.send_text(json.dumps({"type": "error", "message": str(exc)}))
-
+        await _handler.on_connect(connection_id, params)
+        async for text in ws.iter_text():
+            await _handler.on_message(connection_id, text)
     except WebSocketDisconnect:
-        local_manager.disconnect(game_id, ws)
+        pass
+    finally:
+        await _handler.on_disconnect(connection_id)
+        _registry.unregister(connection_id)
