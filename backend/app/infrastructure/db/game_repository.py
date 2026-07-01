@@ -20,6 +20,7 @@ from app.domain.game.models import (
     TradeStatus,
     TurnPhase,
 )
+from app.application.ports.game_repository import AbstractGameRepository
 from app.infrastructure.db.dynamodb import TABLE_NAME, get_dynamodb_resource
 
 
@@ -31,7 +32,7 @@ class OptimisticLockError(Exception):
     pass
 
 
-class GameRepository:
+class GameRepository(AbstractGameRepository):
     async def load(self, game_id: str) -> Game:
         async with get_dynamodb_resource() as ddb:
             table = await ddb.Table(TABLE_NAME)

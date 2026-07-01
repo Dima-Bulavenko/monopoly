@@ -10,10 +10,11 @@ from typing import cast
 
 from datetime import datetime, timezone
 
+from app.application.ports.connection_repository import AbstractConnectionRepository
 from app.infrastructure.db.dynamodb import TABLE_NAME, get_dynamodb_resource
 
 
-class ConnectionRepository:
+class ConnectionRepository(AbstractConnectionRepository):
     async def save_connection(
         self, connection_id: str, game_id: str, player_id: str
     ) -> None:

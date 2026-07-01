@@ -12,15 +12,15 @@ from app.domain.game.events import Event, PlayerJoinedLobbyEvent
 from app.domain.game.models import Game, GameStatus, Player
 
 if TYPE_CHECKING:
-    from app.infrastructure.db.game_repository import GameRepository
-    from app.infrastructure.websocket.broadcaster import BroadcasterProtocol
+    from app.application.ports.broadcaster import AbstractBroadcaster
+    from app.application.ports.game_repository import AbstractGameRepository
 
 
 class GameService:
     def __init__(
         self,
-        game_repo: "GameRepository",
-        broadcaster: "BroadcasterProtocol",
+        game_repo: "AbstractGameRepository",
+        broadcaster: "AbstractBroadcaster",
         engine: GameEngine | None = None,
     ) -> None:
         self._repo = game_repo

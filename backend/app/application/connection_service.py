@@ -5,11 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.infrastructure.db.connection_repository import ConnectionRepository
+    from app.application.ports.connection_repository import AbstractConnectionRepository
 
 
 class ConnectionService:
-    def __init__(self, connection_repo: "ConnectionRepository") -> None:
+    def __init__(self, connection_repo: "AbstractConnectionRepository") -> None:
         self._repo = connection_repo
 
     async def on_connect(

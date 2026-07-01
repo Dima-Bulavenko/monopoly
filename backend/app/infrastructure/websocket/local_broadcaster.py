@@ -17,6 +17,7 @@ from app.application.dto.websocket_dto import (
     event_to_dto,
     game_to_dto,
 )
+from app.application.ports.broadcaster import AbstractBroadcaster
 from app.domain.game.events import Event
 from app.domain.game.models import Game
 
@@ -52,7 +53,7 @@ class LocalConnectionManager:
 local_manager = LocalConnectionManager()
 
 
-class LocalWebSocketBroadcaster:
+class LocalWebSocketBroadcaster(AbstractBroadcaster):
     """Broadcaster that pushes directly to LocalConnectionManager sockets."""
 
     async def broadcast(self, game_id: str, events: list[Event], game: Game) -> None:

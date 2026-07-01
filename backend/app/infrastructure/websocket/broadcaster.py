@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING
 
 import aioboto3
 
@@ -11,6 +11,7 @@ from app.application.dto.websocket_dto import (
     event_to_dto,
     game_to_dto,
 )
+from app.application.ports.broadcaster import AbstractBroadcaster
 from app.config import settings
 from app.domain.game.events import Event
 from app.domain.game.models import Game
@@ -19,13 +20,7 @@ if TYPE_CHECKING:
     from app.infrastructure.db.connection_repository import ConnectionRepository
 
 
-class BroadcasterProtocol(Protocol):
-    async def broadcast(
-        self, game_id: str, events: list[Event], game: Game
-    ) -> None: ...
-
-
-class WebSocketBroadcaster:
+class WebSocketBroadcaster(AbstractBroadcaster):
     def __init__(self, connection_repo: "ConnectionRepository") -> None:
         self._connection_repo = connection_repo
 
