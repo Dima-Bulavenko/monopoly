@@ -8,14 +8,12 @@ const MAX_RECONNECT_ATTEMPTS = 5;
 
 export class WsClient {
 	private ws: WebSocket | null = null;
-	private gameId = "";
 	private token = "";
 	private reconnectAttempts = 0;
 	private intentionalClose = false;
 	private handlers: Set<MessageHandler> = new Set();
 
-	connect(gameId: string, token: string) {
-		this.gameId = gameId;
+	connect(token: string) {
 		this.token = token;
 		this.intentionalClose = false;
 		this.reconnectAttempts = 0;
@@ -23,7 +21,7 @@ export class WsClient {
 	}
 
 	private _open() {
-		const url = `/ws/${this.gameId}?token=${encodeURIComponent(this.token)}`;
+		const url = `/ws?token=${encodeURIComponent(this.token)}`;
 		this.ws = new WebSocket(url);
 
 		this.ws.onmessage = (event: MessageEvent<string>) => {
