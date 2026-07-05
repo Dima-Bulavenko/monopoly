@@ -36,7 +36,6 @@ from app.application.dto.websocket_dto import (
     SellHouseMessage,
     UnmortgagePropertyMessage,
     UseJailCardMessage,
-    game_to_dto,
 )
 from app.application.game_service import GameService
 from app.domain.exceptions import DomainError
@@ -80,7 +79,7 @@ async def _push_game_state_to_connection(conn_id: str, game_id: str) -> None:
     message = GameUpdateMessage(
         type="game_update",
         events=[],
-        state=game_to_dto(game),
+        state=game,
     )
     payload = message.model_dump_json().encode()
 

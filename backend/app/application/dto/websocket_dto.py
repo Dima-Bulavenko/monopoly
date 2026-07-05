@@ -7,7 +7,7 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
 from app.domain.game.events import Event
-from app.domain.game.models import Game
+from app.application.dto.game_dto import GameStateResponse
 
 # ---------------------------------------------------------------------------
 # Inbound message classes (one per action, discriminated by `action` field)
@@ -149,7 +149,7 @@ class ErrorMessage(BaseModel):
 class GameUpdateMessage(BaseModel):
     type: Literal["game_update"] = "game_update"
     events: list[dict[str, Any]] = []
-    state: dict[str, Any] | None = None
+    state: GameStateResponse | None = None
 
 
 _OutboundUnion = Annotated[
@@ -184,15 +184,4 @@ def event_to_dto(event: Event) -> dict[str, Any]:
     """Serialise a domain event to a JSON-safe dict, adding a 'type' discriminator."""
     d = event.model_dump(mode="json")
     d["type"] = type(event).__name__
-    return d
-
-
-def game_to_dto(game: Game) -> dict[str, Any]:
-    """Serialise a domain Game to a JSON-safe dict.
-
-    Properties use string keys so the result is JSON-serialisable.
-    """
-    d = game.model_dump(mode="json")
-    # dict[int, PropertyState] → int keys must become strings for JSON
-    d["properties"] = {str(k): v for k, v in d["properties"].items()}
     return d

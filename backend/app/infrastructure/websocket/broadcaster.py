@@ -9,12 +9,12 @@ import aioboto3
 from app.application.dto.websocket_dto import (
     GameUpdateMessage,
     event_to_dto,
-    game_to_dto,
 )
 from app.application.ports.broadcaster import AbstractBroadcaster
 from app.config import settings
 from app.domain.game.events import Event
 from app.domain.game.models import Game
+from app.application.dto.game_dto import GameStateResponse
 
 if TYPE_CHECKING:
     from app.infrastructure.db.connection_repository import ConnectionRepository
@@ -32,7 +32,7 @@ class WebSocketBroadcaster(AbstractBroadcaster):
         message = GameUpdateMessage(
             type="game_update",
             events=[event_to_dto(e) for e in events],
-            state=game_to_dto(game),
+            state=GameStateResponse.model_validate(game, from_attributes=True),
         )
         payload = message.model_dump_json().encode()
 

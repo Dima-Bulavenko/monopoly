@@ -15,11 +15,11 @@ from fastapi import WebSocket
 from app.application.dto.websocket_dto import (
     GameUpdateMessage,
     event_to_dto,
-    game_to_dto,
 )
 from app.application.ports.broadcaster import AbstractBroadcaster
 from app.domain.game.events import Event
 from app.domain.game.models import Game
+from app.application.dto.game_dto import GameStateResponse
 
 
 class LocalConnectionManager:
@@ -60,6 +60,6 @@ class LocalWebSocketBroadcaster(AbstractBroadcaster):
         message = GameUpdateMessage(
             type="game_update",
             events=[event_to_dto(e) for e in events],
-            state=game_to_dto(game),
+            state=GameStateResponse.model_validate(game, from_attributes=True),
         )
         await local_manager.broadcast(game_id, message.model_dump())

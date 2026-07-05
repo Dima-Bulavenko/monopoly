@@ -42,7 +42,7 @@ async def create_game(
     )
     return GameResponse(
         game_id=game.game_id,
-        status=game.status.value,
+        status=game.status,
         player_count=len(game.players),
         max_players=game.max_players,
     )
@@ -61,7 +61,7 @@ async def join_game(game_id: str, current_user: CurrentUserDep) -> GameResponse:
         raise HTTPException(status_code=404, detail="Game not found")
     return GameResponse(
         game_id=game.game_id,
-        status=game.status.value,
+        status=game.status,
         player_count=len(game.players),
         max_players=game.max_players,
     )
@@ -88,32 +88,4 @@ async def get_game_state(
     except GameNotFoundError:
         raise HTTPException(status_code=404, detail="Game not found")
 
-    return GameStateResponse(
-        game_id=game.game_id,
-        status=game.status.value,
-        phase=game.phase.value,
-        current_player_id=(game.current_player.player_id if game.players else None),
-        players=[
-            {
-                "player_id": p.player_id,
-                "name": p.name,
-                "position": p.position,
-                "balance": p.balance,
-                "in_jail": p.in_jail,
-                "is_bankrupt": p.is_bankrupt,
-            }
-            for p in game.players
-        ],
-        properties={
-            str(k): {
-                "square_index": v.square_index,
-                "owner_id": v.owner_id,
-                "houses": v.houses,
-                "hotel": v.hotel,
-                "mortgaged": v.mortgaged,
-            }
-            for k, v in game.properties.items()
-        },
-        free_parking_pot=game.free_parking_pot,
-        max_players=game.max_players,
-    )
+    return game

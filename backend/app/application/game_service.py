@@ -10,6 +10,7 @@ from app.domain.game.commands import Command
 from app.domain.game.engine import GameEngine
 from app.domain.game.events import Event, PlayerJoinedLobbyEvent
 from app.domain.game.models import Game, GameStatus, Player
+from app.application.dto.game_dto import GameStateResponse
 
 if TYPE_CHECKING:
     from app.application.ports.broadcaster import AbstractBroadcaster
@@ -88,8 +89,9 @@ class GameService:
         await self._broadcaster.broadcast(game_id, events, new_game)
         return events
 
-    async def get_game_state(self, game_id: str) -> Game:
-        return await self._repo.load(game_id)
+    async def get_game_state(self, game_id: str) -> GameStateResponse:
+        game = await self._repo.load(game_id)
+        return GameStateResponse.model_validate(game, from_attributes=True)
 
     def _game_to_dict(self, game: Game) -> dict:
         return dataclasses.asdict(game)
