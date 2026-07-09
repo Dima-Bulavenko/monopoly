@@ -1,7 +1,8 @@
 import { create } from "zustand";
+import type { GameStateType } from "#/features/game/api/gameStateSchema";
 import type { OutboundMessage } from "#/types/ws";
 
-type GameState = Extract<OutboundMessage, { type: "game_update" }>["state"];
+type GameState = GameStateType;
 type ServerEvent = Extract<
 	OutboundMessage,
 	{ type: "game_update" }
@@ -42,3 +43,14 @@ export const useGameStore = create<GameStoreState>()((set) => ({
 		set({ gameState: null, events: [], wsError: null });
 	},
 }));
+
+export function useActiveGame<T>(selector: (state: GameState) => T): T {
+	return useGameStore((store) => {
+		if (!store.gameState) {
+			throw new Error(
+				"useActiveGame was called outside of a loaded game route.",
+			);
+		}
+		return selector(store.gameState);
+	});
+}
