@@ -6,7 +6,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import type { WsClient } from "#/lib/ws-client";
+import type { WsClient } from "#/lib/websocket/ws-client";
 import { Header } from "../components/layout/header";
 import TanStackFormDevtools from "../integrations/tanstack-form/devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";

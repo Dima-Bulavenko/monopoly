@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { WsClient } from "#/lib/ws-client";
+import { WsClient } from "#/lib/websocket/ws-client";
 
 export function getContext() {
 	const queryClient = new QueryClient();
