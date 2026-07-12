@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 import type { GameStateType } from "#/features/game/api/gameStateSchema";
 import type { OutboundMessage } from "#/types/ws";
 
@@ -20,29 +21,31 @@ interface GameStoreState {
 	reset: () => void;
 }
 
-export const useGameStore = create<GameStoreState>()((set) => ({
-	gameState: null,
-	events: [],
-	wsError: null,
+export const useGameStore = create<GameStoreState>()(
+	immer((set) => ({
+		gameState: null,
+		events: [],
+		wsError: null,
 
-	setGameState(gameState) {
-		set({ gameState });
-	},
+		setGameState(gameState) {
+			set({ gameState });
+		},
 
-	appendEvents(newEvents) {
-		set((s) => ({
-			events: [...s.events, ...newEvents].slice(-MAX_EVENTS),
-		}));
-	},
+		appendEvents(newEvents) {
+			set((s) => ({
+				events: [...s.events, ...newEvents].slice(-MAX_EVENTS),
+			}));
+		},
 
-	setWsError(wsError) {
-		set({ wsError });
-	},
+		setWsError(wsError) {
+			set({ wsError });
+		},
 
-	reset() {
-		set({ gameState: null, events: [], wsError: null });
-	},
-}));
+		reset() {
+			set({ gameState: null, events: [], wsError: null });
+		},
+	})),
+);
 
 export function useActiveGame<T>(selector: (state: GameState) => T): T {
 	return useGameStore((store) => {
