@@ -1,9 +1,9 @@
 import { QueryClient } from "@tanstack/react-query";
-import { WsClient } from "#/lib/websocket/ws-client";
+import { WebSocketClient } from "#/lib/websocket/ws-client";
 
 export function getContext() {
 	const queryClient = new QueryClient();
-	const wsClient = new WsClient();
+	const wsClient = new WebSocketClient("/ws");
 
 	return {
 		queryClient,

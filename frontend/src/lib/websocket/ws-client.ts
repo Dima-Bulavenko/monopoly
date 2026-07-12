@@ -1,72 +1,113 @@
-import type { InboundMessage, OutboundMessage } from "#/types/ws";
-import { OutboundMessageSchema } from "#/types/ws";
+import { type WsMessage, WsMessageSchema } from "./messageSchema";
 
-type MessageHandler = (msg: OutboundMessage) => void;
+type MessageListener = (message: WsMessage) => void;
+type VoidListener = () => void;
+type ErrorListener = (event: Event) => void;
 
-const RECONNECT_DELAY_MS = 2000;
-const MAX_RECONNECT_ATTEMPTS = 5;
+export class WebSocketClient {
+	private socket?: WebSocket;
 
-export class WsClient {
-	private ws: WebSocket | null = null;
-	private token = "";
-	private reconnectAttempts = 0;
-	private intentionalClose = false;
-	private handlers: Set<MessageHandler> = new Set();
+	private messageListeners = new Set<MessageListener>();
+	private openListeners = new Set<VoidListener>();
+	private closeListeners = new Set<VoidListener>();
+	private errorListeners = new Set<ErrorListener>();
+
+	constructor(private readonly url: string) {}
 
 	connect(token: string) {
-		this.token = token;
-		this.intentionalClose = false;
-		this.reconnectAttempts = 0;
-		this._open();
-	}
-
-	private _open() {
-		const url = `/ws?token=${encodeURIComponent(this.token)}`;
-		this.ws = new WebSocket(url);
-
-		this.ws.onmessage = (event: MessageEvent<string>) => {
-			let raw: unknown;
-			try {
-				raw = JSON.parse(event.data);
-			} catch {
-				return;
-			}
-			const result = OutboundMessageSchema.safeParse(raw);
-			if (result.success) {
-				for (const h of this.handlers) h(result.data);
-			}
-		};
-
-		this.ws.onclose = () => {
-			if (this.intentionalClose) return;
-			if (this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-				this.reconnectAttempts++;
-				setTimeout(() => this._open(), RECONNECT_DELAY_MS);
-			}
-		};
-	}
-
-	send(msg: InboundMessage) {
-		if (this.ws?.readyState === WebSocket.OPEN) {
-			this.ws.send(JSON.stringify(msg));
+		if (this.socket?.readyState === WebSocket.OPEN) {
+			return;
 		}
-	}
+		const url = `${this.url}?token=${encodeURIComponent(token)}`;
 
-	addHandler(handler: MessageHandler) {
-		this.handlers.add(handler);
-	}
+		this.socket = new WebSocket(url);
 
-	removeHandler(handler: MessageHandler) {
-		this.handlers.delete(handler);
+		this.socket.onopen = () => {
+			this.openListeners.forEach((listener) => {
+				listener();
+			});
+		};
+
+		this.socket.onclose = () => {
+			this.closeListeners.forEach((listener) => {
+				listener();
+			});
+		};
+
+		this.socket.onerror = (event) => {
+			this.errorListeners.forEach((listener) => {
+				listener(event);
+			});
+		};
+
+		this.socket.onmessage = (event) => {
+			this.handleMessage(event.data);
+		};
 	}
 
 	disconnect() {
-		this.intentionalClose = true;
-		this.ws?.close();
-		this.ws = null;
+		this.socket?.close();
 	}
 
-	get isConnected() {
-		return this.ws?.readyState === WebSocket.OPEN;
+	send(message: WsMessage) {
+		if (this.socket?.readyState !== WebSocket.OPEN) {
+			throw new Error("WebSocket is not connected.");
+		}
+
+		this.socket.send(JSON.stringify(message));
+	}
+
+	onMessage(listener: MessageListener) {
+		this.messageListeners.add(listener);
+
+		return () => {
+			this.messageListeners.delete(listener);
+		};
+	}
+
+	onOpen(listener: VoidListener) {
+		this.openListeners.add(listener);
+
+		return () => {
+			this.openListeners.delete(listener);
+		};
+	}
+
+	onClose(listener: VoidListener) {
+		this.closeListeners.add(listener);
+
+		return () => {
+			this.closeListeners.delete(listener);
+		};
+	}
+
+	onError(listener: ErrorListener) {
+		this.errorListeners.add(listener);
+
+		return () => {
+			this.errorListeners.delete(listener);
+		};
+	}
+
+	private handleMessage(raw: string) {
+		let json: unknown;
+
+		try {
+			json = JSON.parse(raw);
+		} catch {
+			console.error("Received invalid JSON.");
+			return;
+		}
+
+		const parsed = WsMessageSchema.safeParse(json);
+
+		if (!parsed.success) {
+			console.error("Invalid websocket message.", parsed.error);
+			return;
+		}
+
+		this.messageListeners.forEach((listener) => {
+			listener(parsed.data);
+		});
 	}
 }
