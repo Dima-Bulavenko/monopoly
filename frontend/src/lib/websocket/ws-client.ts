@@ -98,7 +98,6 @@ export class WebSocketClient {
 			console.error("Received invalid JSON.");
 			return;
 		}
-
 		const parsed = WsMessageSchema.safeParse(json);
 
 		if (!parsed.success) {

@@ -9,7 +9,7 @@ export function useJoinGame() {
 		...joinGameOptions(),
 		onSuccess: (data) => {
 			router.navigate({
-				to: "/games/$gameId",
+				to: "/games/$gameId/lobby",
 				params: { gameId: data.game_id },
 			});
 		},

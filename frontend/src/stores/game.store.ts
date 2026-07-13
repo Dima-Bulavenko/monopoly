@@ -1,48 +1,34 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { GameStateType } from "#/features/game/api/gameStateSchema";
-import type { OutboundMessage } from "#/types/ws";
 
 type GameState = GameStateType;
-type ServerEvent = Extract<
-	OutboundMessage,
-	{ type: "game_update" }
->["events"][number];
-
-const MAX_EVENTS = 200;
 
 interface GameStoreState {
 	gameState: GameState | null;
-	events: ServerEvent[];
-	wsError: string | null;
 	setGameState: (state: GameState) => void;
-	appendEvents: (events: ServerEvent[]) => void;
-	setWsError: (error: string | null) => void;
+	updateActiveGame: (recipe: (draft: GameState) => void) => void;
 	reset: () => void;
 }
 
 export const useGameStore = create<GameStoreState>()(
 	immer((set) => ({
 		gameState: null,
-		events: [],
-		wsError: null,
 
 		setGameState(gameState) {
 			set({ gameState });
 		},
-
-		appendEvents(newEvents) {
-			set((s) => ({
-				events: [...s.events, ...newEvents].slice(-MAX_EVENTS),
-			}));
+		updateActiveGame(recipe) {
+			set((state) => {
+				if (!state.gameState) {
+					console.warn("Attempted to update game state outside of a game.");
+					return;
+				}
+				recipe(state.gameState);
+			});
 		},
-
-		setWsError(wsError) {
-			set({ wsError });
-		},
-
 		reset() {
-			set({ gameState: null, events: [], wsError: null });
+			set({ gameState: null });
 		},
 	})),
 );
