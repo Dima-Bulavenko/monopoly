@@ -1,10 +1,12 @@
 """Pydantic DTOs for HTTP endpoints."""
 
 from __future__ import annotations
+from typing import Annotated
 
 from pydantic import BaseModel, Field
 
 from app.domain.game.models import (
+    Game,
     GameStatus,
     TurnPhase,
     Player,
@@ -14,15 +16,12 @@ from app.domain.game.models import (
 )
 
 
-class CreateGameRequest(BaseModel):
-    max_players: int = Field(default=3, ge=2, le=6)
+class CreateGameDTO(BaseModel):
+    max_players: Annotated[int,Field(ge=2, le=6)]
 
 
-class GameResponse(BaseModel):
+class ReadGameDTO(BaseModel):
     game_id: str
-    status: GameStatus
-    player_count: int
-    max_players: int
 
 
 class GameStateResponse(BaseModel):

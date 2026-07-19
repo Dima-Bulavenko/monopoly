@@ -1,12 +1,15 @@
 """Core domain models for the Monopoly game engine."""
 
 from __future__ import annotations
+from typing import Annotated
 
 from enum import Enum
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+
+IdType = Annotated[str, Field(default_factory=lambda: str(uuid4()))]
 
 class GameStatus(str, Enum):
     LOBBY = "lobby"
@@ -45,7 +48,7 @@ class AuctionState(BaseModel):
 
 
 class TradeOffer(BaseModel):
-    trade_id: str
+    trade_id: IdType
     proposer_id: str
     target_id: str
     offer_property_indices: list[int] = Field(default_factory=list)
@@ -56,7 +59,7 @@ class TradeOffer(BaseModel):
 
 
 class Player(BaseModel):
-    player_id: str
+    player_id: IdType
     name: str
     position: int = 0
     balance: int = 1500
@@ -66,74 +69,12 @@ class Player(BaseModel):
     get_out_of_jail_cards: int = 0
     is_bankrupt: bool = False
 
-    @classmethod
-    def create(cls, name: str, user_id: str | None = None) -> "Player":
-        return cls(
-            player_id=user_id if user_id is not None else str(uuid4()),
-            name=name,
-        )
-
 
 class Game(BaseModel):
-    game_id: str
+    game_id: IdType
     status: GameStatus = GameStatus.LOBBY
     players: list[Player] = Field(default_factory=list)
+    host_player_id: str
     current_player_index: int = 0
-    phase: TurnPhase = TurnPhase.WAITING_FOR_ROLL
+    max_players: int = Field(ge=2, le=6)
 
-    # {square_index: PropertyState} for all purchasable squares
-    properties: dict[int, PropertyState] = Field(default_factory=dict)
-
-    # Card deck order stored as lists of card IDs (serialisable)
-    community_chest_deck: list[str] = Field(default_factory=list)
-    chance_deck: list[str] = Field(default_factory=list)
-
-    # Active sub-states
-    pending_auction: AuctionState | None = None
-    pending_trade: TradeOffer | None = None
-
-    # Dice state — last roll, retained for utility rent calculation
-    last_roll: tuple[int, int] = (0, 0)
-
-    # Free Parking pot (optional house rule — engine always populates it,
-    # product can choose whether to award it)
-    free_parking_pot: int = 0
-
-    # Maximum number of players allowed in this game (set by host, 2–6)
-    max_players: int = Field(default=3, ge=2, le=6)
-
-    # Optimistic-locking version incremented on every save
-    version: int = 0
-
-    # ----------------------------------------------------------------------
-    # Convenience helpers
-    # ----------------------------------------------------------------------
-
-    @classmethod
-    def create(cls, max_players: int = 3) -> "Game":
-        from app.domain.board.squares import (
-            BOARD,
-            PropertySquare,
-            RailroadSquare,
-            UtilitySquare,
-        )
-
-        game = cls(game_id=str(uuid4()), max_players=max_players)
-        for sq in BOARD:
-            if isinstance(sq, (PropertySquare, RailroadSquare, UtilitySquare)):
-                game.properties[sq.index] = PropertyState(square_index=sq.index)
-        return game
-
-    @property
-    def current_player(self) -> Player:
-        return self.players[self.current_player_index]
-
-    @property
-    def active_players(self) -> list[Player]:
-        return [p for p in self.players if not p.is_bankrupt]
-
-    def player_by_id(self, player_id: str) -> Player:
-        for p in self.players:
-            if p.player_id == player_id:
-                return p
-        raise ValueError(f"Player {player_id} not found")

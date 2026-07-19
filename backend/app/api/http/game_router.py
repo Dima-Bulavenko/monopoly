@@ -6,8 +6,8 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.api.deps import CurrentUserDep
 from app.application.dto.game_dto import (
-    CreateGameRequest,
-    GameResponse,
+    CreateGameDTO,
+    ReadGameDTO,
     GameStateResponse,
 )
 from app.application.game_service import GameService
@@ -30,26 +30,17 @@ def _make_game_service() -> GameService:
     return GameService(repo, broadcaster)
 
 
-@router.post("/", response_model=GameResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post("/", response_model=ReadGameDTO, status_code=status.HTTP_201_CREATED)
 async def create_game(
-    body: CreateGameRequest, current_user: CurrentUserDep
-) -> GameResponse:
-    svc = _make_game_service()
-    game = await svc.create_game(
-        host_name=current_user.display_name,
-        user_id=current_user.user_id,
-        max_players=body.max_players,
-    )
-    return GameResponse(
-        game_id=game.game_id,
-        status=game.status,
-        player_count=len(game.players),
-        max_players=game.max_players,
-    )
+    body: CreateGameDTO, current_user: CurrentUserDep
+) -> ReadGameDTO:
+    
+    return ReadGameDTO(game_id="gav")
 
 
-@router.post("/{game_id}/join", response_model=GameResponse)
-async def join_game(game_id: str, current_user: CurrentUserDep) -> GameResponse:
+@router.post("/{game_id}/join", response_model=ReadGameDTO)
+async def join_game(game_id: str, current_user: CurrentUserDep) -> ReadGameDTO:
     svc = _make_game_service()
     try:
         game, _ = await svc.join_game(
@@ -59,11 +50,8 @@ async def join_game(game_id: str, current_user: CurrentUserDep) -> GameResponse:
         )
     except GameNotFoundError:
         raise HTTPException(status_code=404, detail="Game not found")
-    return GameResponse(
+    return ReadGameDTO(
         game_id=game.game_id,
-        status=game.status,
-        player_count=len(game.players),
-        max_players=game.max_players,
     )
 
 

@@ -62,14 +62,6 @@ class WebSocketAppHandler(WebSocketHandler):
         self._store = store
         self._handlers: dict[str, ActionHandler] = {}
 
-    def register(self, action: str, handler: ActionHandler) -> None:
-        """Register *handler* to be called when an inbound message has ``action == action``."""
-        self._handlers[action] = handler
-
-    # ------------------------------------------------------------------
-    # WebSocketHandler interface
-    # ------------------------------------------------------------------
-
     async def on_connect(self, connection_id: str, params: dict[str, str]) -> None:
         token = params.pop("token", "")
         try:
@@ -95,7 +87,6 @@ class WebSocketAppHandler(WebSocketHandler):
             # Connection not in store — unauthenticated or already closed.
             await self._sender.close(connection_id, code=_CLOSE_UNAUTHORIZED)
             return
-
         try:
             body = json.loads(text)
         except json.JSONDecodeError:

@@ -11,3 +11,6 @@ class AbstractGameRepository(ABC):
 
     @abstractmethod
     async def save(self, game: Game) -> None: ...
+
+    @abstractmethod
+    async def create(self, )

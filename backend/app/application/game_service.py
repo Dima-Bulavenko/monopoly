@@ -1,6 +1,7 @@
 """Application service orchestrating the game engine with persistence and broadcasting."""
 
 from __future__ import annotations
+from rich.panel import p
 
 import dataclasses
 from random import Random
@@ -10,11 +11,23 @@ from app.domain.game.commands import Command
 from app.domain.game.engine import GameEngine
 from app.domain.game.events import Event, PlayerJoinedLobbyEvent
 from app.domain.game.models import Game, GameStatus, Player
-from app.application.dto.game_dto import GameStateResponse
+from app.application.dto.game_dto import ReadGameDTO, CreateGameDTO
 
 if TYPE_CHECKING:
     from app.application.ports.broadcaster import AbstractBroadcaster
     from app.application.ports.game_repository import AbstractGameRepository
+
+
+class CreateGameUseCase:
+    def __init__(self, game_repo: "AbstractGameRepository") -> None:
+        self._game_repo = game_repo
+
+    async def execute(self, player_id: str, player_name: str, game_data: CreateGameDTO) -> ReadGameDTO:
+        game = Game.model_validate({**game_data.model_dump(), "host_player_id": user_id}, from_attributes=True)
+        host = Player(player_id=player_id, name=player_name)
+        game.players.append(host)
+        await self._game_repo.save(game)
+        return ReadGameDTO.model_validate(game, from_attributes=True)
 
 
 class GameService:
@@ -28,18 +41,14 @@ class GameService:
         self._broadcaster = broadcaster
         self._engine = engine or GameEngine()
 
-    async def create_game(
-        self, host_name: str, user_id: str, max_players: int = 3
-    ) -> Game:
+    async def create_game(self, host_name: str, user_id: str, max_players: int = 3) -> Game:
         game = Game.create(max_players=max_players)
         host = Player.create(host_name, user_id=user_id)
         game.players.append(host)
         await self._repo.save(game)
         return game
 
-    async def join_game(
-        self, game_id: str, player_name: str, user_id: str
-    ) -> tuple[Game, Player]:
+    async def join_game(self, game_id: str, player_name: str, user_id: str) -> tuple[Game, Player]:
         from app.domain.exceptions import InvalidActionError
 
         game = await self._repo.load(game_id)
@@ -79,9 +88,7 @@ class GameService:
         await self._broadcaster.broadcast(game_id, events, new_game)
         return events
 
-    async def handle_action(
-        self, game_id: str, command: Command, rng: Random | None = None
-    ) -> list[Event]:
+    async def handle_action(self, game_id: str, command: Command, rng: Random | None = None) -> list[Event]:
         game = await self._repo.load(game_id)
         rng = rng or Random()
         new_game, events = self._engine.process(game, command, rng)
