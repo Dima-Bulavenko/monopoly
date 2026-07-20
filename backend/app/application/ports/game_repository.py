@@ -7,10 +7,16 @@ from app.domain.game.models import Game
 
 class AbstractGameRepository(ABC):
     @abstractmethod
-    async def load(self, game_id: str) -> Game: ...
+    async def get(self, game_id: str) -> Game | None:
+        """Retrieve a game by ID. Returns None if not found."""
+        ...
 
     @abstractmethod
-    async def save(self, game: Game) -> None: ...
+    async def update(self, game: Game) -> Game:
+        """Update an existing game. Raises GameNotFoundError if game does not exist."""
+        ...
 
     @abstractmethod
-    async def create(self, )
+    async def create(self, game: Game) -> Game:
+        """Create a new game. Raises GameAlreadyExistsError if game already exists."""
+        ...

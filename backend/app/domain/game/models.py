@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 IdType = Annotated[str, Field(default_factory=lambda: str(uuid4()))]
 
+
 class GameStatus(str, Enum):
     LOBBY = "lobby"
     IN_PROGRESS = "in_progress"
@@ -77,4 +78,4 @@ class Game(BaseModel):
     host_player_id: str
     current_player_index: int = 0
     max_players: int = Field(ge=2, le=6)
-
+    version: int = 0
