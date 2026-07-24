@@ -24,8 +24,10 @@ from app.infrastructure.websocket.local_sender import (
     LocalConnectionRegistry,
     LocalWebSocketSender,
 )
+from app.application.websocket.dispatcher import MessageDispatcher
 
 router = APIRouter(tags=["dev-websocket"])
+
 
 # ---------------------------------------------------------------------------
 # Process-level singletons (created once; shared across all connections).
@@ -37,6 +39,7 @@ _handler = WebSocketAppHandler(
     sender=_sender,
     verifier=make_verifier(),
     store=_store,
+    dispatcher=MessageDispatcher(handlers={}),
 )
 
 # ---------------------------------------------------------------------------

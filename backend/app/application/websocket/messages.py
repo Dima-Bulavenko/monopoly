@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from typing import Annotated, Literal
+from pydantic import BaseModel, TypeAdapter, Field
 from app.application.websocket.interfaces import MessageType
 
 
@@ -13,4 +14,12 @@ class JoinGamePayload(BaseModel):
 
 
 class JoinGameMessage(BaseMessage[JoinGamePayload]):
-    type: MessageType = MessageType.JOIN_GAME
+    type: Literal[MessageType.JOIN_GAME]
+
+
+InboundMessages = Annotated[
+    JoinGameMessage,
+    Field(discriminator="type"),
+]
+
+inbound_messages_adapter = TypeAdapter[InboundMessages](InboundMessages)

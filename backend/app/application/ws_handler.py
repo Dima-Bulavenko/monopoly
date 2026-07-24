@@ -1,43 +1,17 @@
-"""Concrete WebSocket application handler — generic, feature-agnostic dispatcher.
-
-Usage
------
-Build one handler per process startup and register action callbacks for every
-feature that needs WebSocket support:
-
-    handler = WebSocketAppHandler(sender, verifier, store)
-    handler.register("roll_dice", game_feature.handle_roll_dice)
-    handler.register("chat_message", chat_feature.handle_message)
-
-The transport adapter (FastAPI endpoint or Lambda function) then calls
-``on_connect``, ``on_message``, and ``on_disconnect`` on the handler.
-
-Message format (inbound)::
-
-    {"action": "<registered_action>", "payload": {...}}
-
-A missing or unrecognised action is silently ignored so that the wire protocol
-can evolve without breaking older clients.
-"""
-
 from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Awaitable, Callable
-from typing import TYPE_CHECKING
 
 from app.application.ports.websocket_handler import WebSocketHandler
-
-if TYPE_CHECKING:
-    from app.application.ports.connection_store import AbstractConnectionStore
-    from app.application.ports.websocket_sender import WebSocketSender
-    from app.auth.domain.token_service import JWTVerifier
+from app.application.ports.connection_store import AbstractConnectionStore
+from app.application.ports.websocket_sender import WebSocketSender
+from app.auth.domain.token_service import JWTVerifier
+from app.application.websocket.messages import inbound_messages_adapter
+from pydantic import ValidationError
+from app.application.websocket.dispatcher import MessageDispatcher
 
 logger = logging.getLogger(__name__)
-
-# Signature: (connection_id, user_id, payload) → None
-ActionHandler = Callable[[str, str, dict], Awaitable[None]]
 
 _CLOSE_UNAUTHORIZED = 4001
 _CLOSE_NORMAL = 1000
@@ -53,14 +27,15 @@ class WebSocketAppHandler(WebSocketHandler):
 
     def __init__(
         self,
-        sender: "WebSocketSender",
-        verifier: "JWTVerifier",
-        store: "AbstractConnectionStore",
+        sender: WebSocketSender,
+        verifier: JWTVerifier,
+        store: AbstractConnectionStore,
+        dispatcher: MessageDispatcher,
     ) -> None:
         self._sender = sender
         self._verifier = verifier
         self._store = store
-        self._handlers: dict[str, ActionHandler] = {}
+        self._dispatcher = dispatcher
 
     async def on_connect(self, connection_id: str, params: dict[str, str]) -> None:
         token = params.pop("token", "")
@@ -93,26 +68,12 @@ class WebSocketAppHandler(WebSocketHandler):
             logger.warning("WebSocket bad JSON from conn=%s", connection_id)
             return
 
-        if not isinstance(body, dict):
-            return
-
-        action: str = body.get("action", "")
-        payload: dict = (
-            body.get("payload", {}) if isinstance(body.get("payload"), dict) else {}
-        )
-
-        handler = self._handlers.get(action)
-        if handler is None:
-            logger.debug(
-                "WebSocket unknown action %r from conn=%s", action, connection_id
-            )
-            return
-
         try:
-            await handler(connection_id, meta["user_id"], payload)
-        except Exception:
-            logger.exception(
-                "WebSocket action handler error: action=%r conn=%s",
-                action,
-                connection_id,
+            message = inbound_messages_adapter.validate_python(body)
+        except ValidationError as e:
+            logger.warning(
+                "WebSocket invalid message from conn=%s: %s", connection_id, e
             )
+            return
+
+        await self._dispatcher.dispatch(message)
