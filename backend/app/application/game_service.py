@@ -3,7 +3,7 @@ from __future__ import annotations
 from app.domain.game.models import Game, Player
 from app.application.dto.game_dto import ReadGameDTO, CreateGameDTO
 from app.domain.game.exceptions import GameNotFoundError
-from app.application.ports.game_repository import AbstractGameRepository
+from app.domain.game.repository import AbstractGameRepository
 
 
 class CreateGameUseCase:

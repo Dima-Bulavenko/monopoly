@@ -3,9 +3,11 @@ from __future__ import annotations
 import json
 import logging
 
-from app.application.ports.websocket_handler import WebSocketHandler
-from app.application.ports.connection_store import AbstractConnectionStore
-from app.application.ports.websocket_sender import WebSocketSender
+from app.application.websocket.interfaces import (
+    WebSocketHandler,
+    WebSocketSender,
+    WebSocketConnectionStore,
+)
 from app.auth.domain.token_service import JWTVerifier
 from app.application.websocket.messages import inbound_messages_adapter
 from pydantic import ValidationError
@@ -29,7 +31,7 @@ class WebSocketAppHandler(WebSocketHandler):
         self,
         sender: WebSocketSender,
         verifier: JWTVerifier,
-        store: AbstractConnectionStore,
+        store: WebSocketConnectionStore,
         dispatcher: MessageDispatcher,
     ) -> None:
         self._sender = sender

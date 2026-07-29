@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from fastapi import WebSocket
 
-from app.application.ports.websocket_sender import WebSocketSender
+from app.application.websocket.interfaces import WebSocketSender
 
 
 class LocalConnectionRegistry:

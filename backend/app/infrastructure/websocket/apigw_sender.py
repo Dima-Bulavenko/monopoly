@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import aioboto3
 
-from app.application.ports.websocket_sender import WebSocketSender
+from app.application.websocket.interfaces import WebSocketSender
 from app.config import settings
 
 

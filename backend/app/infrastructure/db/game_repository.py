@@ -13,7 +13,7 @@ from boto3.dynamodb.conditions import Attr
 from app.domain.game.models import (
     Game,
 )
-from app.application.ports.game_repository import AbstractGameRepository
+from app.domain.game.repository import AbstractGameRepository
 from app.infrastructure.db.dynamodb import TABLE_NAME, get_dynamodb_resource
 from app.domain.game.exceptions import GameAlreadyExistsError, GameNotFoundError
 
