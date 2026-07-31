@@ -2,12 +2,15 @@ from typing import Protocol
 from enum import StrEnum
 
 
-class MessageType(StrEnum):
-    JOIN_GAME = "join_game"
+class InboundMessagesNames(StrEnum): ...
+
+
+class OutboundMessageNames(StrEnum):
+    JOINED_GAME = "joined_game"
 
 
 class IMessage(Protocol):
-    type: MessageType
+    type: InboundMessagesNames
 
 
 class IMessageHandler(Protocol):

@@ -1,6 +1,10 @@
 from typing import Annotated, Literal
 from pydantic import BaseModel, TypeAdapter, Field
-from app.application.websocket.interfaces import MessageType
+from app.application.websocket.interfaces import (
+    OutboundMessageNames,
+    InboundMessagesNames,
+)
+from app.domain.game.models import Player
 
 
 class BaseMessage[PayloadT: BaseModel](BaseModel):
@@ -8,18 +12,27 @@ class BaseMessage[PayloadT: BaseModel](BaseModel):
     payload: PayloadT
 
 
-class JoinGamePayload(BaseModel):
+class InboundMessage(BaseMessage[BaseModel]):
+    type: InboundMessagesNames
+
+
+inbound_messages_adapter = TypeAdapter[InboundMessage](InboundMessage)
+
+# Outbound messages
+
+
+class JoinedGamePayload(BaseModel):
     game_id: str
-    player_id: str
+    player: Player
 
 
-class JoinGameMessage(BaseMessage[JoinGamePayload]):
-    type: Literal[MessageType.JOIN_GAME]
+class JoinedGameMessage(BaseMessage[JoinedGamePayload]):
+    type: Literal[OutboundMessageNames.JOINED_GAME] = OutboundMessageNames.JOINED_GAME
 
 
-InboundMessages = Annotated[
-    JoinGameMessage,
+OutboundMessages = Annotated[
+    JoinedGameMessage,
     Field(discriminator="type"),
 ]
 
-inbound_messages_adapter = TypeAdapter[InboundMessages](InboundMessages)
+outbound_messages_adapter = TypeAdapter[OutboundMessages](OutboundMessages)

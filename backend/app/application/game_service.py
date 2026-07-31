@@ -4,6 +4,8 @@ from app.domain.game.models import Game, Player
 from app.application.dto.game_dto import ReadGameDTO, CreateGameDTO
 from app.domain.game.exceptions import GameNotFoundError
 from app.domain.game.repository import AbstractGameRepository
+from app.application.event_bus import EventBus
+from app.application.websocket.messages import JoinedGameMessage, JoinedGamePayload
 
 
 class CreateGameUseCase:
@@ -24,8 +26,11 @@ class CreateGameUseCase:
 
 
 class JoinGameUseCase:
-    def __init__(self, game_repo: AbstractGameRepository) -> None:
+    def __init__(
+        self, game_repo: AbstractGameRepository, event_bus: EventBus[JoinedGameMessage]
+    ) -> None:
         self._game_repo = game_repo
+        self._event_bus = event_bus
 
     async def execute(
         self, player_id: str, player_name: str, game_id: str
@@ -38,5 +43,10 @@ class JoinGameUseCase:
         new_player = Player(player_id=player_id, name=player_name)
         game.players.append(new_player)
         await self._game_repo.update(game)
+        await self._event_bus.publish(
+            JoinedGameMessage(
+                payload=JoinedGamePayload(game_id=game_id, player=new_player)
+            )
+        )
 
         return ReadGameDTO.model_validate(game, from_attributes=True)
