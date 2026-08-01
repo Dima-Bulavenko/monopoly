@@ -76,3 +76,6 @@ class WebSocketConnectionStore(Protocol):
 
     async def delete(self, connection_id: str) -> None:
         """Remove metadata for a closed connection."""
+
+    async def connection_for_user(self, user_id: str) -> str | None:
+        """Return the connection ID for a given user, or None if not connected."""

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Callable
+from collections.abc import Awaitable, Callable
 from app.application.websocket.messages import OutboundMessages
 
 
@@ -9,12 +9,12 @@ class InMemoryEventBus:
 
     async def publish(self, event: OutboundMessages) -> None:
         for handler in self._handlers.get(type(event), []):
-            handler(event)
+            await handler(event)
 
     def subscribe(
         self,
         event: OutboundMessages,
-        handler: Callable[[OutboundMessages], None],
+        handler: Callable[[OutboundMessages], Awaitable[None]],
     ) -> None:
         event_type = type(event)
         self._handlers[event_type].append(handler)
