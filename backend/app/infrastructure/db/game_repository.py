@@ -13,12 +13,12 @@ from boto3.dynamodb.conditions import Attr
 from app.domain.game.models import (
     Game,
 )
-from app.domain.game.repository import AbstractGameRepository
+from app.domain.game.repository import IGameRepository
 from app.infrastructure.db.dynamodb import TABLE_NAME, get_dynamodb_resource
 from app.domain.game.exceptions import GameAlreadyExistsError, GameNotFoundError
 
 
-class GameRepository(AbstractGameRepository):
+class GameRepository(IGameRepository):
     async def get(self, game_id: str) -> Game | None:
         async with get_dynamodb_resource() as ddb:
             table = await ddb.Table(TABLE_NAME)

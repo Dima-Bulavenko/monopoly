@@ -9,13 +9,13 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 
-class JWTSigner(Protocol):
+class IJWTSigner(Protocol):
     def sign(self, payload: dict[str, Any]) -> str:
         """Sign a payload and return a JWT string."""
         ...
 
 
-class JWTVerifier(Protocol):
+class IJWTVerifier(Protocol):
     def verify(self, token: str) -> dict[str, Any]:
         """Verify a JWT and return its decoded payload.
 
@@ -24,7 +24,7 @@ class JWTVerifier(Protocol):
         ...
 
 
-class PasswordHasher(Protocol):
+class IPasswordHasher(Protocol):
     def hash(self, plain: str) -> str:
         """Hash a plain-text password."""
         ...

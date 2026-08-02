@@ -11,10 +11,9 @@ class InMemoryEventBus:
         for handler in self._handlers.get(type(event), []):
             await handler(event)
 
-    def subscribe(
+    def subscribe[T: OutboundMessages](
         self,
-        event: OutboundMessages,
-        handler: Callable[[OutboundMessages], Awaitable[None]],
+        event_type: type[T],
+        handler: Callable[[T], Awaitable[None]],
     ) -> None:
-        event_type = type(event)
         self._handlers[event_type].append(handler)

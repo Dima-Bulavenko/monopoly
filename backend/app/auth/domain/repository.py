@@ -13,7 +13,7 @@ from uuid import UUID
 from app.auth.domain.models import OAuthAccount, RefreshToken, User
 
 
-class UserRepository(Protocol):
+class IUserRepository(Protocol):
     async def get_by_id(self, user_id: UUID) -> User | None: ...
 
     async def get_by_email(self, email: str) -> User | None: ...
@@ -41,7 +41,7 @@ class UserRepository(Protocol):
     ) -> OAuthAccount: ...
 
 
-class TokenRepository(Protocol):
+class ITokenRepository(Protocol):
     async def create_refresh_token(
         self,
         *,

@@ -22,7 +22,7 @@ class OAuthIdentity(BaseModel):
     display_name: str
 
 
-class OAuthProvider(Protocol):
+class IOAuthProvider(Protocol):
     async def verify_id_token(self, id_token: str) -> OAuthIdentity:
         """Verify the provider-issued ID token and return a normalised identity.
 

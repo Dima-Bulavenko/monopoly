@@ -17,7 +17,7 @@ class IMessageHandler(Protocol):
     async def handle(self, message: IMessage) -> None: ...
 
 
-class WebSocketSender(Protocol):
+class IWebSocketSender(Protocol):
     """Push text messages to a specific WebSocket connection."""
 
     async def send(self, connection_id: str, text: str) -> None:
@@ -27,14 +27,14 @@ class WebSocketSender(Protocol):
         """Close a connection with the given WebSocket close code."""
 
 
-class WebSocketBroadcaster(Protocol):
+class IWebSocketBroadcaster(Protocol):
     """Push text messages to multiple WebSocket connections."""
 
     async def broadcast(self, connection_ids: list[str], text: str) -> None:
         """Send a text frame to multiple connections."""
 
 
-class WebSocketHandler(Protocol):
+class IWebSocketHandler(Protocol):
     """React to WebSocket lifecycle events delivered by a transport adapter."""
 
     async def on_connect(self, connection_id: str, params: dict[str, str]) -> None:
@@ -58,7 +58,7 @@ class WebSocketHandler(Protocol):
         """
 
 
-class WebSocketConnectionStore(Protocol):
+class IWebSocketConnectionStore(Protocol):
     """Persist per-connection metadata (player ID, params) for the lifetime of a connection."""
 
     async def save(

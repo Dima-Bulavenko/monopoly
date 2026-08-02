@@ -22,19 +22,19 @@ from app.auth.domain.exceptions import (
     InvalidCredentialsError,
     InvalidTokenError,
 )
-from app.auth.domain.oauth import OAuthProvider
-from app.auth.domain.repository import TokenRepository, UserRepository
-from app.auth.domain.token_service import JWTSigner, JWTVerifier, PasswordHasher
+from app.auth.domain.oauth import IOAuthProvider
+from app.auth.domain.repository import ITokenRepository, IUserRepository
+from app.auth.domain.token_service import IJWTSigner, IJWTVerifier, IPasswordHasher
 
 
 class AuthService:
     def __init__(
         self,
-        user_repo: UserRepository,
-        token_repo: TokenRepository,
-        jwt_signer: JWTSigner,
-        jwt_verifier: JWTVerifier,
-        password_hasher: PasswordHasher,
+        user_repo: IUserRepository,
+        token_repo: ITokenRepository,
+        jwt_signer: IJWTSigner,
+        jwt_verifier: IJWTVerifier,
+        password_hasher: IPasswordHasher,
         refresh_token_expire_days: int,
     ) -> None:
         self._user_repo = user_repo
@@ -76,7 +76,7 @@ class AuthService:
     async def login_with_oauth(
         self,
         req: OAuthLoginRequest,
-        provider: OAuthProvider,
+        provider: IOAuthProvider,
     ) -> TokenResponse:
         identity = await provider.verify_id_token(req.id_token)
 

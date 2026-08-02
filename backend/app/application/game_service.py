@@ -3,13 +3,13 @@ from __future__ import annotations
 from app.domain.game.models import Game, Player
 from app.application.dto.game_dto import ReadGameDTO, CreateGameDTO
 from app.domain.game.exceptions import GameNotFoundError
-from app.domain.game.repository import AbstractGameRepository
-from app.application.event_bus import EventBus
+from app.domain.game.repository import IGameRepository
+from app.application.event_bus import IEventBus
 from app.application.websocket.messages import JoinedGameMessage, JoinedGamePayload
 
 
 class CreateGameUseCase:
-    def __init__(self, game_repo: "AbstractGameRepository") -> None:
+    def __init__(self, game_repo: IGameRepository) -> None:
         self._game_repo = game_repo
 
     async def execute(
@@ -27,7 +27,7 @@ class CreateGameUseCase:
 
 class JoinGameUseCase:
     def __init__(
-        self, game_repo: AbstractGameRepository, event_bus: EventBus[JoinedGameMessage]
+        self, game_repo: IGameRepository, event_bus: IEventBus[JoinedGameMessage]
     ) -> None:
         self._game_repo = game_repo
         self._event_bus = event_bus

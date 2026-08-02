@@ -2,7 +2,7 @@ from fastapi import Depends
 from typing import Annotated
 from app.application.game_service import CreateGameUseCase, JoinGameUseCase
 from app.infrastructure.db.game_repository import GameRepository
-from app.application.event_bus import EventBus
+from app.application.event_bus import IEventBus
 from app.bootstrap import event_bus
 
 
@@ -10,13 +10,13 @@ def get_game_repository() -> GameRepository:
     return GameRepository()
 
 
-def get_event_bus() -> EventBus:
+def get_event_bus() -> IEventBus:
     return event_bus
 
 
 GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 
-EventBusDep = Annotated[EventBus, Depends(get_event_bus)]
+EventBusDep = Annotated[IEventBus, Depends(get_event_bus)]
 
 
 def create_game_use_case(game_repo: GameRepositoryDep) -> CreateGameUseCase:

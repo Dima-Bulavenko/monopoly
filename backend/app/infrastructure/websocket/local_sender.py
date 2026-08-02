@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from fastapi import WebSocket
 
-from app.application.websocket.interfaces import WebSocketBroadcaster, WebSocketSender
+from app.application.websocket.interfaces import IWebSocketBroadcaster, IWebSocketSender
 
 
 class LocalConnectionRegistry:
@@ -32,7 +32,7 @@ class LocalConnectionRegistry:
 local_registry = LocalConnectionRegistry()
 
 
-class LocalWebSocketBroadcaster(WebSocketBroadcaster):
+class LocalWebSocketBroadcaster(IWebSocketBroadcaster):
     """Broadcasts text frames to multiple connections via the local registry."""
 
     def __init__(self, sender: LocalWebSocketSender) -> None:
@@ -43,7 +43,7 @@ class LocalWebSocketBroadcaster(WebSocketBroadcaster):
             await self._sender.send(connection_id, text)
 
 
-class LocalWebSocketSender(WebSocketSender):
+class LocalWebSocketSender(IWebSocketSender):
     """Delivers text frames directly to the registered FastAPI WebSocket."""
 
     def __init__(self, registry: LocalConnectionRegistry = local_registry) -> None:

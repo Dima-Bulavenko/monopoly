@@ -6,10 +6,10 @@ in a plain dict — no external dependencies required.
 
 from __future__ import annotations
 
-from app.application.websocket.interfaces import WebSocketConnectionStore
+from app.application.websocket.interfaces import IWebSocketConnectionStore
 
 
-class LocalConnectionStore(WebSocketConnectionStore):
+class LocalConnectionStore(IWebSocketConnectionStore):
     """In-memory store for per-connection metadata."""
 
     def __init__(self) -> None:

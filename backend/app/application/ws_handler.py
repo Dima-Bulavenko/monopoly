@@ -4,11 +4,11 @@ import json
 import logging
 
 from app.application.websocket.interfaces import (
-    WebSocketHandler,
-    WebSocketSender,
-    WebSocketConnectionStore,
+    IWebSocketHandler,
+    IWebSocketSender,
+    IWebSocketConnectionStore,
 )
-from app.auth.domain.token_service import JWTVerifier
+from app.auth.domain.token_service import IJWTVerifier
 from app.application.websocket.messages import inbound_messages_adapter
 from pydantic import ValidationError
 from app.application.websocket.dispatcher import MessageDispatcher
@@ -19,7 +19,7 @@ _CLOSE_UNAUTHORIZED = 4001
 _CLOSE_NORMAL = 1000
 
 
-class WebSocketAppHandler(WebSocketHandler):
+class WebSocketAppHandler(IWebSocketHandler):
     """Generic, feature-agnostic WebSocket handler.
 
     * Authenticates each connection using a JWT from the ``token`` query param.
@@ -29,9 +29,9 @@ class WebSocketAppHandler(WebSocketHandler):
 
     def __init__(
         self,
-        sender: WebSocketSender,
-        verifier: JWTVerifier,
-        store: WebSocketConnectionStore,
+        sender: IWebSocketSender,
+        verifier: IJWTVerifier,
+        store: IWebSocketConnectionStore,
         dispatcher: MessageDispatcher,
     ) -> None:
         self._sender = sender

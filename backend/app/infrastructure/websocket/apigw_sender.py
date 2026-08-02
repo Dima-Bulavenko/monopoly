@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import aioboto3
 
-from app.application.websocket.interfaces import WebSocketSender
+from app.application.websocket.interfaces import IWebSocketSender
 from app.config import settings
 
 
-class ApiGatewayWebSocketSender(WebSocketSender):
+class ApiGatewayWebSocketSender(IWebSocketSender):
     """Delivers text frames and connection-close requests via API Gateway Management API."""
 
     async def send(self, connection_id: str, text: str) -> None:
