@@ -1,12 +1,18 @@
 """Application configuration via pydantic-settings."""
 
 from __future__ import annotations
+from enum import StrEnum
 
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _ENV_FILE = Path(__file__).parent.parent.parent / ".env"
+
+
+class EnvOptions(StrEnum):
+    LOCAL = "local"
+    PROD = "prod"
 
 
 class Settings(BaseSettings):
@@ -16,7 +22,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    env: str = "local"
+    env: EnvOptions = EnvOptions.LOCAL
     dynamodb_table_name: str = "monopoly"
     aws_region: str = "us-east-1"
     dynamodb_endpoint_url: str | None = None

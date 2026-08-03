@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import uuid
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -7,22 +6,18 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.application.ws_handler import WebSocketAppHandler
 from app.auth.infrastructure.jwt.rs256_service import make_verifier
 from app.infrastructure.websocket.local_sender import (
-    LocalConnectionRegistry,
-    LocalWebSocketSender,
+    local_registry as _registry,
 )
-from app.infrastructure.websocket.local_store import LocalConnectionStore
-from app.application.websocket.dispatcher import MessageDispatcher
+from app.bootstrap import container
 
 router = APIRouter(tags=["dev-websocket"])
 
-_registry = LocalConnectionRegistry()
-_sender = LocalWebSocketSender(_registry)
-_store = LocalConnectionStore()
+
 _handler = WebSocketAppHandler(
-    sender=_sender,
     verifier=make_verifier(),
-    store=_store,
-    dispatcher=MessageDispatcher(handlers={}),
+    sender=container.sender,
+    store=container.connection_store,
+    dispatcher=container.dispatcher,
 )
 
 

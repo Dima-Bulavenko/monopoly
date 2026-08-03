@@ -3,7 +3,7 @@ from typing import Annotated
 from app.application.game_service import CreateGameUseCase, JoinGameUseCase
 from app.infrastructure.db.game_repository import GameRepository
 from app.application.event_bus import IEventBus
-from app.bootstrap import event_bus
+from app.bootstrap import container
 
 
 def get_game_repository() -> GameRepository:
@@ -11,7 +11,7 @@ def get_game_repository() -> GameRepository:
 
 
 def get_event_bus() -> IEventBus:
-    return event_bus
+    return container.event_bus
 
 
 GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]

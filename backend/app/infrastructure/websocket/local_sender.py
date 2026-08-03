@@ -35,7 +35,7 @@ local_registry = LocalConnectionRegistry()
 class LocalWebSocketBroadcaster(IWebSocketBroadcaster):
     """Broadcasts text frames to multiple connections via the local registry."""
 
-    def __init__(self, sender: LocalWebSocketSender) -> None:
+    def __init__(self, sender: IWebSocketSender) -> None:
         self._sender = sender
 
     async def broadcast(self, connection_ids: list[str], text: str) -> None:
