@@ -9,7 +9,11 @@ from app.application.dto.game_dto import (
     CreateGameDTO,
     ReadGameDTO,
 )
-from app.api.game_dependency import CreateGameUseCaseDep, JoinGameUseCaseDep
+from app.api.game_dependency import (
+    CreateGameUseCaseDep,
+    JoinGameUseCaseDep,
+    GetGameUseCaseDep,
+)
 from app.api.http.schemas import ErrorResponseModel
 from app.domain.game.exceptions import GameAlreadyExistsError, GameNotFoundError
 
@@ -65,6 +69,32 @@ async def join_game(
         game = await join_game_use_case.execute(
             current_user.user_id, current_user.display_name, game_id
         )
+    except GameNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
+        )
+    return game
+
+
+@router.get(
+    "/{game_id}",
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Game not found",
+            "model": ErrorResponseModel,
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthorized",
+            "model": ErrorResponseModel,
+        },
+    },
+)
+async def get_game(
+    game_id: str, _: CurrentUserDep, get_game_use_case: GetGameUseCaseDep
+) -> ReadGameDTO:
+    try:
+        game = await get_game_use_case.execute(game_id)
     except GameNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"

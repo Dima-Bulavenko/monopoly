@@ -50,3 +50,14 @@ class JoinGameUseCase:
         )
 
         return ReadGameDTO.model_validate(game, from_attributes=True)
+
+
+class GetGameUseCase:
+    def __init__(self, game_repo: IGameRepository) -> None:
+        self._game_repo = game_repo
+
+    async def execute(self, game_id: str) -> ReadGameDTO:
+        game = await self._game_repo.get(game_id)
+        if not game:
+            raise GameNotFoundError(f"Game with ID {game_id} not found")
+        return ReadGameDTO.model_validate(game, from_attributes=True)
