@@ -7,6 +7,7 @@ class InboundMessagesNames(StrEnum): ...
 
 class OutboundMessageNames(StrEnum):
     JOINED_GAME = "joined_game"
+    GAME_STARTED = "game_started"
 
 
 class IMessage(Protocol):

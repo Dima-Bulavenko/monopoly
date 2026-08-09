@@ -13,9 +13,14 @@ from app.api.game_dependency import (
     CreateGameUseCaseDep,
     JoinGameUseCaseDep,
     GetGameUseCaseDep,
+    StartGameUseCaseDep,
 )
 from app.api.http.schemas import ErrorResponseModel
-from app.domain.game.exceptions import GameAlreadyExistsError, GameNotFoundError
+from app.domain.game.exceptions import (
+    GameAlreadyExistsError,
+    GameNotFoundError,
+    GameAlreadyStartedError,
+)
 
 router = APIRouter(prefix="/games", tags=["games"])
 
@@ -98,5 +103,39 @@ async def get_game(
     except GameNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
+        )
+    return game
+
+
+@router.patch(
+    "/{game_id}/start",
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Game not found",
+            "model": ErrorResponseModel,
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthorized",
+            "model": ErrorResponseModel,
+        },
+        status.HTTP_400_BAD_REQUEST: {
+            "description": "Game already started",
+            "model": ErrorResponseModel,
+        },
+    },
+)
+async def start_game(
+    game_id: str, _: CurrentUserDep, start_game_use_case: StartGameUseCaseDep
+) -> ReadGameDTO:
+    try:
+        game = await start_game_use_case.execute(game_id)
+    except GameNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
+        )
+    except GameAlreadyStartedError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Game already started"
         )
     return game

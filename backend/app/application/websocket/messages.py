@@ -4,7 +4,7 @@ from app.application.websocket.interfaces import (
     OutboundMessageNames,
     InboundMessagesNames,
 )
-from app.domain.game.models import Player
+from app.domain.game.models import Player, GameStatus
 
 
 class BaseMessage[PayloadT: BaseModel](BaseModel):
@@ -30,8 +30,18 @@ class JoinedGameMessage(BaseMessage[JoinedGamePayload]):
     type: Literal[OutboundMessageNames.JOINED_GAME] = OutboundMessageNames.JOINED_GAME
 
 
+class GameStartedPayload(BaseModel):
+    game_id: str
+    status: Literal[GameStatus.IN_PROGRESS] = GameStatus.IN_PROGRESS
+
+
+class GameStartedMessage(BaseMessage[GameStartedPayload]):
+    type: Literal[OutboundMessageNames.GAME_STARTED] = OutboundMessageNames.GAME_STARTED
+
+
 OutboundMessages = Annotated[
     JoinedGameMessage,
+    GameStartedMessage,
     Field(discriminator="type"),
 ]
 

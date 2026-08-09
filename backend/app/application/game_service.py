@@ -2,10 +2,16 @@ from __future__ import annotations
 
 from app.domain.game.models import Game, Player
 from app.application.dto.game_dto import ReadGameDTO, CreateGameDTO
-from app.domain.game.exceptions import GameNotFoundError
+from app.domain.game.exceptions import GameNotFoundError, GameAlreadyStartedError
 from app.domain.game.repository import IGameRepository
+from app.domain.game.models import GameStatus
 from app.application.event_bus import IEventBus
-from app.application.websocket.messages import JoinedGameMessage, JoinedGamePayload
+from app.application.websocket.messages import (
+    JoinedGameMessage,
+    JoinedGamePayload,
+    GameStartedMessage,
+    GameStartedPayload,
+)
 
 
 class CreateGameUseCase:
@@ -60,4 +66,30 @@ class GetGameUseCase:
         game = await self._game_repo.get(game_id)
         if not game:
             raise GameNotFoundError(f"Game with ID {game_id} not found")
+        return ReadGameDTO.model_validate(game, from_attributes=True)
+
+
+class StartGameUseCase:
+    def __init__(
+        self, game_repo: IGameRepository, event_bus: IEventBus[GameStartedMessage]
+    ) -> None:
+        self._game_repo = game_repo
+        self._event_bus = event_bus
+
+    async def execute(self, game_id: str) -> ReadGameDTO:
+        game = await self._game_repo.get(game_id)
+        if not game:
+            raise GameNotFoundError(f"Game with ID {game_id} not found")
+        if game.status == GameStatus.LOBBY:
+            game.status = GameStatus.IN_PROGRESS
+            await self._game_repo.update(game)
+        else:
+            raise GameAlreadyStartedError(f"Game with ID {game_id} has already started")
+        await self._event_bus.publish(
+            GameStartedMessage(
+                payload=GameStartedPayload(
+                    game_id=game_id, status=GameStatus.IN_PROGRESS
+                )
+            )
+        )
         return ReadGameDTO.model_validate(game, from_attributes=True)
