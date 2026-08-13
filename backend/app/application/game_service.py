@@ -33,9 +33,13 @@ class CreateGameUseCase:
 
 class JoinGameUseCase:
     def __init__(
-        self, game_repo: IGameRepository, event_bus: IEventBus[JoinedGameMessage]
+        self,
+        game_repo: IGameRepository,
+        event_bus: IEventBus[JoinedGameMessage],
+        start_game_use_case: StartGameUseCase,
     ) -> None:
         self._game_repo = game_repo
+        self._start_game_use_case: StartGameUseCase = start_game_use_case
         self._event_bus = event_bus
 
     async def execute(
@@ -54,7 +58,8 @@ class JoinGameUseCase:
                 payload=JoinedGamePayload(game_id=game_id, player=new_player)
             )
         )
-
+        if len(game.players) >= game.max_players:
+            await self._start_game_use_case.execute(game_id)
         return ReadGameDTO.model_validate(game, from_attributes=True)
 
 

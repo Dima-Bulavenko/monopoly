@@ -124,12 +124,13 @@ async def get_game(
             "model": ErrorResponseModel,
         },
     },
+    include_in_schema=False,
 )
 async def start_game(
     game_id: str, _: CurrentUserDep, start_game_use_case: StartGameUseCaseDep
-) -> ReadGameDTO:
+) -> None:
     try:
-        game = await start_game_use_case.execute(game_id)
+        await start_game_use_case.execute(game_id)
     except GameNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
@@ -138,4 +139,3 @@ async def start_game(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Game already started"
         )
-    return game

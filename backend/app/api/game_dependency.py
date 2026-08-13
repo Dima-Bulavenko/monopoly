@@ -1,3 +1,4 @@
+from __future__ import annotations
 from fastapi import Depends
 from typing import Annotated
 from app.application.game_service import (
@@ -29,9 +30,11 @@ def create_game_use_case(game_repo: GameRepositoryDep) -> CreateGameUseCase:
 
 
 def join_game_use_case(
-    game_repo: GameRepositoryDep, event_bus: EventBusDep
+    game_repo: GameRepositoryDep,
+    event_bus: EventBusDep,
+    start_game_use_case: StartGameUseCaseDep,
 ) -> JoinGameUseCase:
-    return JoinGameUseCase(game_repo, event_bus)
+    return JoinGameUseCase(game_repo, event_bus, start_game_use_case)
 
 
 def get_game_use_case(game_repo: GameRepositoryDep) -> GetGameUseCase:
@@ -39,7 +42,7 @@ def get_game_use_case(game_repo: GameRepositoryDep) -> GetGameUseCase:
 
 
 def start_game_use_case(
-    game_repo: GameRepositoryDep, event_bus: IEventBus
+    game_repo: GameRepositoryDep, event_bus: EventBusDep
 ) -> StartGameUseCase:
     return StartGameUseCase(game_repo, event_bus)
 
