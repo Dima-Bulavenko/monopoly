@@ -5,8 +5,11 @@ import { useGameStore } from "#/stores/game.store";
 
 export const Route = createFileRoute("/_authenticated/games/$gameId")({
 	loader: async ({ params: { gameId }, context: { queryClient } }) => {
+		let game = useGameStore.getState().gameState;
+		if (game?.game_id === gameId) return;
 		const state = await queryClient.fetchQuery(gameStateOptions(gameId));
-		useGameStore.setState({ gameState: GameSchema.parse(state) });
+		game = GameSchema.parse(state);
+		useGameStore.setState({ gameState: game });
 	},
 	component: RouteComponent,
 });

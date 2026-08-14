@@ -20,108 +20,32 @@
         "title": "AccessTokenResponse",
         "type": "object"
       },
-      "CreateGameRequest": {
+      "CreateGameDTO": {
         "properties": {
           "max_players": {
-            "default": 3,
             "maximum": 6.0,
             "minimum": 2.0,
             "title": "Max Players",
             "type": "integer"
           }
         },
-        "title": "CreateGameRequest",
+        "required": [
+          "max_players"
+        ],
+        "title": "CreateGameDTO",
         "type": "object"
       },
-      "GameResponse": {
+      "ErrorResponseModel": {
         "properties": {
-          "game_id": {
-            "title": "Game Id",
-            "type": "string"
-          },
-          "max_players": {
-            "title": "Max Players",
-            "type": "integer"
-          },
-          "player_count": {
-            "title": "Player Count",
-            "type": "integer"
-          },
-          "status": {
-            "title": "Status",
+          "detail": {
+            "title": "Detail",
             "type": "string"
           }
         },
         "required": [
-          "game_id",
-          "status",
-          "player_count",
-          "max_players"
+          "detail"
         ],
-        "title": "GameResponse",
-        "type": "object"
-      },
-      "GameStateResponse": {
-        "properties": {
-          "current_player_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Current Player Id"
-          },
-          "free_parking_pot": {
-            "title": "Free Parking Pot",
-            "type": "integer"
-          },
-          "game_id": {
-            "title": "Game Id",
-            "type": "string"
-          },
-          "max_players": {
-            "title": "Max Players",
-            "type": "integer"
-          },
-          "phase": {
-            "title": "Phase",
-            "type": "string"
-          },
-          "players": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "title": "Players",
-            "type": "array"
-          },
-          "properties": {
-            "additionalProperties": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "title": "Properties",
-            "type": "object"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          }
-        },
-        "required": [
-          "game_id",
-          "status",
-          "phase",
-          "current_player_id",
-          "players",
-          "properties",
-          "free_parking_pot",
-          "max_players"
-        ],
-        "title": "GameStateResponse",
+        "title": "ErrorResponseModel",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -178,6 +102,86 @@
           "id_token"
         ],
         "title": "OAuthLoginRequest",
+        "type": "object"
+      },
+      "Player": {
+        "properties": {
+          "balance": {
+            "default": 1500,
+            "title": "Balance",
+            "type": "integer"
+          },
+          "consecutive_doubles": {
+            "default": 0,
+            "title": "Consecutive Doubles",
+            "type": "integer"
+          },
+          "get_out_of_jail_cards": {
+            "default": 0,
+            "title": "Get Out Of Jail Cards",
+            "type": "integer"
+          },
+          "in_jail": {
+            "default": false,
+            "title": "In Jail",
+            "type": "boolean"
+          },
+          "is_bankrupt": {
+            "default": false,
+            "title": "Is Bankrupt",
+            "type": "boolean"
+          },
+          "jail_turns": {
+            "default": 0,
+            "title": "Jail Turns",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "player_id": {
+            "title": "Player Id",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Player",
+        "type": "object"
+      },
+      "ReadGameDTO": {
+        "properties": {
+          "game_id": {
+            "title": "Game Id",
+            "type": "string"
+          },
+          "max_players": {
+            "maximum": 6.0,
+            "minimum": 2.0,
+            "title": "Max Players",
+            "type": "integer"
+          },
+          "players": {
+            "items": {
+              "$ref": "#/components/schemas/Player"
+            },
+            "title": "Players",
+            "type": "array"
+          }
+        },
+        "required": [
+          "game_id",
+          "players",
+          "max_players"
+        ],
+        "title": "ReadGameDTO",
         "type": "object"
       },
       "RegisterRequest": {
@@ -584,7 +588,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateGameRequest"
+                "$ref": "#/components/schemas/CreateGameDTO"
               }
             }
           },
@@ -595,11 +599,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GameResponse"
+                  "$ref": "#/components/schemas/ReadGameDTO"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseModel"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseModel"
+                }
+              }
+            },
+            "description": "Game already exists"
           },
           "422": {
             "content": {
@@ -623,8 +647,75 @@
         ]
       }
     },
+    "/games/{game_id}": {
+      "get": {
+        "operationId": "get_game",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "game_id",
+            "required": true,
+            "schema": {
+              "title": "Game Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadGameDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseModel"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseModel"
+                }
+              }
+            },
+            "description": "Game not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Game",
+        "tags": [
+          "games"
+        ]
+      }
+    },
     "/games/{game_id}/join": {
-      "post": {
+      "patch": {
         "operationId": "join_game",
         "parameters": [
           {
@@ -642,11 +733,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GameResponse"
+                  "$ref": "#/components/schemas/ReadGameDTO"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseModel"
+                }
+              }
+            },
+            "description": "Game not found"
           },
           "422": {
             "content": {
@@ -665,93 +766,6 @@
           }
         ],
         "summary": "Join Game",
-        "tags": [
-          "games"
-        ]
-      }
-    },
-    "/games/{game_id}/start": {
-      "post": {
-        "operationId": "start_game",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "game_id",
-            "required": true,
-            "schema": {
-              "title": "Game Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "summary": "Start Game",
-        "tags": [
-          "games"
-        ]
-      }
-    },
-    "/games/{game_id}/state": {
-      "get": {
-        "operationId": "get_game_state",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "game_id",
-            "required": true,
-            "schema": {
-              "title": "Game Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GameStateResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "summary": "Get Game State",
         "tags": [
           "games"
         ]

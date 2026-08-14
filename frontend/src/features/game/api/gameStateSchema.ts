@@ -53,17 +53,8 @@ export const AuctionStateSchema = z.object({
 
 export const GameSchema = z.object({
 	game_id: z.string(),
-	status: GameStatusSchema,
 	players: z.array(PlayerSchema),
-	current_player_index: z.number().int().nullable(),
-	phase: TurnPhaseSchema,
-	properties: z.record(z.int(), PropertyStateSchema),
-	free_parking_pot: z.number().int(),
 	max_players: z.number().int().min(2).max(6),
-	pending_trade: TradeOfferSchema.nullable(),
-	pending_auction: AuctionStateSchema.nullable(),
-	last_roll: z.tuple([z.number().int(), z.number().int()]),
-	version: z.number().int(),
 });
 
 export type GameStateType = z.infer<typeof GameSchema>;

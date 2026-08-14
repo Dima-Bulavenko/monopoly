@@ -1,7 +1,7 @@
 import {
 	GameUserJoined,
 	handleGameUserJoined,
-} from "#/features/game/websocket/outgoing/gameUserJoined";
+} from "#/features/game/websocket/incoming/gameUserJoined";
 import { Dispatcher } from "#/lib/websocket/dispatcher";
 import { WebSocketClient } from "#/lib/websocket/ws-client";
 

@@ -23,79 +23,23 @@ export type AccessTokenResponse = {
 };
 
 /**
- * CreateGameRequest
+ * CreateGameDTO
  */
-export type CreateGameRequest = {
-    /**
-     * Max Players
-     */
-    max_players?: number;
-};
-
-/**
- * GameResponse
- */
-export type GameResponse = {
-    /**
-     * Game Id
-     */
-    game_id: string;
+export type CreateGameDto = {
     /**
      * Max Players
      */
     max_players: number;
-    /**
-     * Player Count
-     */
-    player_count: number;
-    /**
-     * Status
-     */
-    status: string;
 };
 
 /**
- * GameStateResponse
+ * ErrorResponseModel
  */
-export type GameStateResponse = {
+export type ErrorResponseModel = {
     /**
-     * Current Player Id
+     * Detail
      */
-    current_player_id: string | null;
-    /**
-     * Free Parking Pot
-     */
-    free_parking_pot: number;
-    /**
-     * Game Id
-     */
-    game_id: string;
-    /**
-     * Max Players
-     */
-    max_players: number;
-    /**
-     * Phase
-     */
-    phase: string;
-    /**
-     * Players
-     */
-    players: Array<{
-        [key: string]: unknown;
-    }>;
-    /**
-     * Properties
-     */
-    properties: {
-        [key: string]: {
-            [key: string]: unknown;
-        };
-    };
-    /**
-     * Status
-     */
-    status: string;
+    detail: string;
 };
 
 /**
@@ -134,6 +78,66 @@ export type OAuthLoginRequest = {
      * Id Token
      */
     id_token: string;
+};
+
+/**
+ * Player
+ */
+export type Player = {
+    /**
+     * Balance
+     */
+    balance?: number;
+    /**
+     * Consecutive Doubles
+     */
+    consecutive_doubles?: number;
+    /**
+     * Get Out Of Jail Cards
+     */
+    get_out_of_jail_cards?: number;
+    /**
+     * In Jail
+     */
+    in_jail?: boolean;
+    /**
+     * Is Bankrupt
+     */
+    is_bankrupt?: boolean;
+    /**
+     * Jail Turns
+     */
+    jail_turns?: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Player Id
+     */
+    player_id?: string;
+    /**
+     * Position
+     */
+    position?: number;
+};
+
+/**
+ * ReadGameDTO
+ */
+export type ReadGameDto = {
+    /**
+     * Game Id
+     */
+    game_id: string;
+    /**
+     * Max Players
+     */
+    max_players: number;
+    /**
+     * Players
+     */
+    players: Array<Player>;
 };
 
 /**
@@ -363,13 +367,21 @@ export type RegisterResponses = {
 export type RegisterResponse = RegisterResponses[keyof RegisterResponses];
 
 export type CreateGameData = {
-    body: CreateGameRequest;
+    body: CreateGameDto;
     path?: never;
     query?: never;
     url: '/games/';
 };
 
 export type CreateGameErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponseModel;
+    /**
+     * Game already exists
+     */
+    409: ErrorResponseModel;
     /**
      * Validation Error
      */
@@ -382,10 +394,48 @@ export type CreateGameResponses = {
     /**
      * Successful Response
      */
-    201: GameResponse;
+    201: ReadGameDto;
 };
 
 export type CreateGameResponse = CreateGameResponses[keyof CreateGameResponses];
+
+export type GetGameData = {
+    body?: never;
+    path: {
+        /**
+         * Game Id
+         */
+        game_id: string;
+    };
+    query?: never;
+    url: '/games/{game_id}';
+};
+
+export type GetGameErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponseModel;
+    /**
+     * Game not found
+     */
+    404: ErrorResponseModel;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetGameError = GetGameErrors[keyof GetGameErrors];
+
+export type GetGameResponses = {
+    /**
+     * Successful Response
+     */
+    200: ReadGameDto;
+};
+
+export type GetGameResponse = GetGameResponses[keyof GetGameResponses];
 
 export type JoinGameData = {
     body?: never;
@@ -401,6 +451,10 @@ export type JoinGameData = {
 
 export type JoinGameErrors = {
     /**
+     * Game not found
+     */
+    404: ErrorResponseModel;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -412,67 +466,7 @@ export type JoinGameResponses = {
     /**
      * Successful Response
      */
-    200: GameResponse;
+    200: ReadGameDto;
 };
 
 export type JoinGameResponse = JoinGameResponses[keyof JoinGameResponses];
-
-export type StartGameData = {
-    body?: never;
-    path: {
-        /**
-         * Game Id
-         */
-        game_id: string;
-    };
-    query?: never;
-    url: '/games/{game_id}/start';
-};
-
-export type StartGameErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type StartGameError = StartGameErrors[keyof StartGameErrors];
-
-export type StartGameResponses = {
-    /**
-     * Successful Response
-     */
-    204: void;
-};
-
-export type StartGameResponse = StartGameResponses[keyof StartGameResponses];
-
-export type GetGameStateData = {
-    body?: never;
-    path: {
-        /**
-         * Game Id
-         */
-        game_id: string;
-    };
-    query?: never;
-    url: '/games/{game_id}/state';
-};
-
-export type GetGameStateErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetGameStateError = GetGameStateErrors[keyof GetGameStateErrors];
-
-export type GetGameStateResponses = {
-    /**
-     * Successful Response
-     */
-    200: GameStateResponse;
-};
-
-export type GetGameStateResponse = GetGameStateResponses[keyof GetGameStateResponses];
