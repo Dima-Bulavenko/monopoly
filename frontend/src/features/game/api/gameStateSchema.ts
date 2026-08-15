@@ -55,6 +55,7 @@ export const GameSchema = z.object({
 	game_id: z.string(),
 	players: z.array(PlayerSchema),
 	max_players: z.number().int().min(2).max(6),
+	status: GameStatusSchema,
 });
 
 export type GameStateType = z.infer<typeof GameSchema>;

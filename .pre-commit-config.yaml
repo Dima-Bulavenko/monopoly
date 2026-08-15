@@ -30,14 +30,14 @@ repos:
       - id: biome-check
         name: biome lint and format
         language: system
-        entry: pnpm --dir frontend exec biome check --write
+        entry: bash -lc "cd frontend && npm run check -- --write"
         files: ^frontend/.*\.(js|jsx|ts|tsx|json|css)$
         pass_filenames: false
 
       - id: tsc
         name: TypeScript type check
         language: system
-        entry: pnpm --dir frontend exec tsc --noEmit
+        entry: bash -lc "cd frontend && npm exec -- tsc --noEmit"
         files: ^frontend/.*\.(ts|tsx)$
         pass_filenames: false
 
