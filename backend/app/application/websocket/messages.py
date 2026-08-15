@@ -40,8 +40,7 @@ class GameStartedMessage(BaseMessage[GameStartedPayload]):
 
 
 OutboundMessages = Annotated[
-    JoinedGameMessage,
-    GameStartedMessage,
+    JoinedGameMessage | GameStartedMessage,
     Field(discriminator="type"),
 ]
 

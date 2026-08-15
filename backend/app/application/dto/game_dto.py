@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from pydantic import BaseModel, Field
-from app.domain.game.models import Player
+from app.domain.game.models import Player, GameStatus
 
 
 class CreateGameDTO(BaseModel):
@@ -14,4 +14,5 @@ class CreateGameDTO(BaseModel):
 class ReadGameDTO(BaseModel):
     game_id: str
     players: list[Player]
+    status: GameStatus
     max_players: Annotated[int, Field(ge=2, le=6)]

@@ -95,7 +95,8 @@ def register_websocket_event_handlers(container: Container) -> None:
     Must be called once during app startup.
     """
     from app.application.websocket.handlers.joined_game import JoinedGameHandler
-    from app.application.websocket.messages import JoinedGameMessage
+    from app.application.websocket.handlers.game_started import GameStartedHandler
+    from app.application.websocket.messages import JoinedGameMessage, GameStartedMessage
     from app.infrastructure.db.game_repository import GameRepository
 
     joined_game_handler = JoinedGameHandler(
@@ -103,7 +104,14 @@ def register_websocket_event_handlers(container: Container) -> None:
         store=container.connection_store,
         game_repo=GameRepository(),
     )
+
+    game_started_handler = GameStartedHandler(
+        broadcaster=container.broadcaster,
+        store=container.connection_store,
+        game_repo=GameRepository(),
+    )
     container.event_bus.subscribe(JoinedGameMessage, joined_game_handler.handle)
+    container.event_bus.subscribe(GameStartedMessage, game_started_handler.handle)
 
 
 container = Container()
