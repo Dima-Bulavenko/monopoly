@@ -6,6 +6,7 @@ from fastapi.routing import APIRoute
 from mangum import Mangum
 
 from app.api.http.game_router import router as game_router
+from app.api.http.board_router import router as board_router
 from app.auth.api.router import router as auth_router
 from app.auth.infrastructure.db.postgres import get_engine
 from app.bootstrap import container, register_websocket_event_handlers
@@ -39,6 +40,7 @@ app = FastAPI(
 
 app.include_router(game_router)
 app.include_router(auth_router)
+app.include_router(board_router)
 
 if _IS_LOCAL:
     # In local dev, WebSocket is handled by FastAPI directly (no API Gateway)

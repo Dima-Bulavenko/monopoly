@@ -1,6 +1,7 @@
 """Static board configuration for a standard Monopoly game (40 squares, 0-indexed)."""
 
 from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -34,12 +35,20 @@ class Square(BaseModel):
 
     index: int
     name: str
-    square_type: SquareType
+    square_type: Literal[
+        SquareType.GO,
+        SquareType.COMMUNITY_CHEST,
+        SquareType.CHANCE,
+        SquareType.JAIL,
+        SquareType.FREE_PARKING,
+        SquareType.GO_TO_JAIL,
+    ]
 
 
 class PropertySquare(Square):
     """A colour-group property."""
 
+    square_type: Literal[SquareType.PROPERTY] = SquareType.PROPERTY
     color_group: ColorGroup
     price: int
     # rent[0]=base, [1]=1H, [2]=2H, [3]=3H, [4]=4H, [5]=hotel
@@ -54,6 +63,7 @@ class PropertySquare(Square):
 
 
 class RailroadSquare(Square):
+    square_type: Literal[SquareType.RAILROAD] = SquareType.RAILROAD
     price: int
     mortgage_value: int
 
@@ -64,6 +74,7 @@ class RailroadSquare(Square):
 
 
 class UtilitySquare(Square):
+    square_type: Literal[SquareType.UTILITY] = SquareType.UTILITY
     price: int
     mortgage_value: int
 
@@ -74,6 +85,7 @@ class UtilitySquare(Square):
 
 
 class TaxSquare(Square):
+    square_type: Literal[SquareType.TAX] = SquareType.TAX
     amount: int
 
 
