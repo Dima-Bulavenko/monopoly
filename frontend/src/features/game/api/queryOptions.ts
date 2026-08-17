@@ -1,5 +1,5 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import { createGame, getGame, joinGame } from "#/client/sdk.gen";
+import { createGame, getBoard, getGame, joinGame } from "#/client/sdk.gen";
 import type { CreateGameDto } from "#/client/types.gen";
 
 export const gameKeys = {
@@ -34,5 +34,17 @@ export function gameStateOptions(gameId: string) {
 			getGame({ path: { game_id: gameId }, throwOnError: true }).then(
 				(res) => res.data,
 			),
+	});
+}
+
+export const boardKeys = {
+	all: ["board"],
+} as const;
+
+export function getBoardOptions() {
+	return queryOptions({
+		staleTime: "static",
+		queryKey: boardKeys.all,
+		queryFn: () => getBoard({ throwOnError: true }).then((res) => res.data),
 	});
 }

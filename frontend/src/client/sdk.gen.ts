@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateGameData, CreateGameErrors, CreateGameResponses, GetGameData, GetGameErrors, GetGameResponses, JoinGameData, JoinGameErrors, JoinGameResponses, LoginAppleData, LoginAppleErrors, LoginAppleResponses, LoginData, LoginErrors, LoginGoogleData, LoginGoogleErrors, LoginGoogleResponses, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses } from './types.gen';
+import type { CreateGameData, CreateGameErrors, CreateGameResponses, GetBoardData, GetBoardResponses, GetGameData, GetGameErrors, GetGameResponses, JoinGameData, JoinGameErrors, JoinGameResponses, LoginAppleData, LoginAppleErrors, LoginAppleResponses, LoginData, LoginErrors, LoginGoogleData, LoginGoogleErrors, LoginGoogleResponses, LoginResponses, LogoutData, LogoutErrors, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -82,6 +82,15 @@ export const register = <ThrowOnError extends boolean = false>(options: Options<
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Get Board
+ */
+export const getBoard = <ThrowOnError extends boolean = false>(options?: Options<GetBoardData, ThrowOnError>): RequestResult<GetBoardResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetBoardResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    url: '/board/',
+    ...options
 });
 
 /**

@@ -23,6 +23,21 @@ export type AccessTokenResponse = {
 };
 
 /**
+ * BoardResponse
+ */
+export type BoardResponse = {
+    /**
+     * Board
+     */
+    board: Array<PropertySquare | RailroadSquare | UtilitySquare | TaxSquare | Square>;
+};
+
+/**
+ * ColorGroup
+ */
+export type ColorGroup = 'brown' | 'light_blue' | 'pink' | 'orange' | 'red' | 'yellow' | 'green' | 'dark_blue';
+
+/**
  * CreateGameDTO
  */
 export type CreateGameDto = {
@@ -41,6 +56,11 @@ export type ErrorResponseModel = {
      */
     detail: string;
 };
+
+/**
+ * GameStatus
+ */
+export type GameStatus = 'lobby' | 'in_progress' | 'finished';
 
 /**
  * HTTPValidationError
@@ -123,6 +143,69 @@ export type Player = {
 };
 
 /**
+ * PropertySquare
+ *
+ * A colour-group property.
+ */
+export type PropertySquare = {
+    color_group: ColorGroup;
+    /**
+     * House Cost
+     */
+    house_cost: number;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Mortgage Value
+     */
+    mortgage_value: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Price
+     */
+    price: number;
+    /**
+     * Rent
+     */
+    rent: Array<number>;
+    /**
+     * Square Type
+     */
+    square_type?: 'property';
+};
+
+/**
+ * RailroadSquare
+ */
+export type RailroadSquare = {
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Mortgage Value
+     */
+    mortgage_value: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Price
+     */
+    price: number;
+    /**
+     * Square Type
+     */
+    square_type?: 'railroad';
+};
+
+/**
  * ReadGameDTO
  */
 export type ReadGameDto = {
@@ -138,6 +221,7 @@ export type ReadGameDto = {
      * Players
      */
     players: Array<Player>;
+    status: GameStatus;
 };
 
 /**
@@ -156,6 +240,72 @@ export type RegisterRequest = {
      * Password
      */
     password: string;
+};
+
+/**
+ * Square
+ */
+export type Square = {
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Square Type
+     */
+    square_type: 'go' | 'community_chest' | 'chance' | 'jail' | 'free_parking' | 'go_to_jail';
+};
+
+/**
+ * TaxSquare
+ */
+export type TaxSquare = {
+    /**
+     * Amount
+     */
+    amount: number;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Square Type
+     */
+    square_type?: 'tax';
+};
+
+/**
+ * UtilitySquare
+ */
+export type UtilitySquare = {
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Mortgage Value
+     */
+    mortgage_value: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Price
+     */
+    price: number;
+    /**
+     * Square Type
+     */
+    square_type?: 'utility';
 };
 
 /**
@@ -365,6 +515,22 @@ export type RegisterResponses = {
 };
 
 export type RegisterResponse = RegisterResponses[keyof RegisterResponses];
+
+export type GetBoardData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/board/';
+};
+
+export type GetBoardResponses = {
+    /**
+     * Successful Response
+     */
+    200: BoardResponse;
+};
+
+export type GetBoardResponse = GetBoardResponses[keyof GetBoardResponses];
 
 export type CreateGameData = {
     body: CreateGameDto;

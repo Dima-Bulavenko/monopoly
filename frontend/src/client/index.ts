@@ -2,6 +2,7 @@
 
 export {
 	createGame,
+	getBoard,
 	getGame,
 	joinGame,
 	login,
@@ -14,7 +15,9 @@ export {
 } from "./sdk.gen";
 export type {
 	AccessTokenResponse,
+	BoardResponse,
 	ClientOptions,
+	ColorGroup,
 	CreateGameData,
 	CreateGameDto,
 	CreateGameError,
@@ -23,6 +26,10 @@ export type {
 	CreateGameResponses,
 	ErrorResponse,
 	ErrorResponseModel,
+	GameStatus,
+	GetBoardData,
+	GetBoardResponse,
+	GetBoardResponses,
 	GetGameData,
 	GetGameError,
 	GetGameErrors,
@@ -57,6 +64,8 @@ export type {
 	LogoutResponses,
 	OAuthLoginRequest,
 	Player,
+	PropertySquare,
+	RailroadSquare,
 	ReadGameDto,
 	RefreshData,
 	RefreshError,
@@ -69,5 +78,8 @@ export type {
 	RegisterRequest,
 	RegisterResponse,
 	RegisterResponses,
+	Square,
+	TaxSquare,
+	UtilitySquare,
 	ValidationError,
 } from "./types.gen";

@@ -20,6 +20,67 @@
         "title": "AccessTokenResponse",
         "type": "object"
       },
+      "BoardResponse": {
+        "properties": {
+          "board": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "chance": "#/components/schemas/Square",
+                  "community_chest": "#/components/schemas/Square",
+                  "free_parking": "#/components/schemas/Square",
+                  "go": "#/components/schemas/Square",
+                  "go_to_jail": "#/components/schemas/Square",
+                  "jail": "#/components/schemas/Square",
+                  "property": "#/components/schemas/PropertySquare",
+                  "railroad": "#/components/schemas/RailroadSquare",
+                  "tax": "#/components/schemas/TaxSquare",
+                  "utility": "#/components/schemas/UtilitySquare"
+                },
+                "propertyName": "square_type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/PropertySquare"
+                },
+                {
+                  "$ref": "#/components/schemas/RailroadSquare"
+                },
+                {
+                  "$ref": "#/components/schemas/UtilitySquare"
+                },
+                {
+                  "$ref": "#/components/schemas/TaxSquare"
+                },
+                {
+                  "$ref": "#/components/schemas/Square"
+                }
+              ]
+            },
+            "title": "Board",
+            "type": "array"
+          }
+        },
+        "required": [
+          "board"
+        ],
+        "title": "BoardResponse",
+        "type": "object"
+      },
+      "ColorGroup": {
+        "enum": [
+          "brown",
+          "light_blue",
+          "pink",
+          "orange",
+          "red",
+          "yellow",
+          "green",
+          "dark_blue"
+        ],
+        "title": "ColorGroup",
+        "type": "string"
+      },
       "CreateGameDTO": {
         "properties": {
           "max_players": {
@@ -47,6 +108,15 @@
         ],
         "title": "ErrorResponseModel",
         "type": "object"
+      },
+      "GameStatus": {
+        "enum": [
+          "lobby",
+          "in_progress",
+          "finished"
+        ],
+        "title": "GameStatus",
+        "type": "string"
       },
       "HTTPValidationError": {
         "properties": {
@@ -156,6 +226,92 @@
         "title": "Player",
         "type": "object"
       },
+      "PropertySquare": {
+        "description": "A colour-group property.",
+        "properties": {
+          "color_group": {
+            "$ref": "#/components/schemas/ColorGroup"
+          },
+          "house_cost": {
+            "title": "House Cost",
+            "type": "integer"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "mortgage_value": {
+            "title": "Mortgage Value",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price": {
+            "title": "Price",
+            "type": "integer"
+          },
+          "rent": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rent",
+            "type": "array"
+          },
+          "square_type": {
+            "const": "property",
+            "default": "property",
+            "title": "Square Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "color_group",
+          "price",
+          "rent",
+          "house_cost",
+          "mortgage_value"
+        ],
+        "title": "PropertySquare",
+        "type": "object"
+      },
+      "RailroadSquare": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "mortgage_value": {
+            "title": "Mortgage Value",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price": {
+            "title": "Price",
+            "type": "integer"
+          },
+          "square_type": {
+            "const": "railroad",
+            "default": "railroad",
+            "title": "Square Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "price",
+          "mortgage_value"
+        ],
+        "title": "RailroadSquare",
+        "type": "object"
+      },
       "ReadGameDTO": {
         "properties": {
           "game_id": {
@@ -174,11 +330,15 @@
             },
             "title": "Players",
             "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/GameStatus"
           }
         },
         "required": [
           "game_id",
           "players",
+          "status",
           "max_players"
         ],
         "title": "ReadGameDTO",
@@ -206,6 +366,100 @@
           "display_name"
         ],
         "title": "RegisterRequest",
+        "type": "object"
+      },
+      "Square": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "square_type": {
+            "enum": [
+              "go",
+              "community_chest",
+              "chance",
+              "jail",
+              "free_parking",
+              "go_to_jail"
+            ],
+            "title": "Square Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "square_type"
+        ],
+        "title": "Square",
+        "type": "object"
+      },
+      "TaxSquare": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "square_type": {
+            "const": "tax",
+            "default": "tax",
+            "title": "Square Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "amount"
+        ],
+        "title": "TaxSquare",
+        "type": "object"
+      },
+      "UtilitySquare": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "mortgage_value": {
+            "title": "Mortgage Value",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price": {
+            "title": "Price",
+            "type": "integer"
+          },
+          "square_type": {
+            "const": "utility",
+            "default": "utility",
+            "title": "Square Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "price",
+          "mortgage_value"
+        ],
+        "title": "UtilitySquare",
         "type": "object"
       },
       "ValidationError": {
@@ -578,6 +832,27 @@
         "summary": "Register",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/board/": {
+      "get": {
+        "operationId": "get_board",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Board",
+        "tags": [
+          "board"
         ]
       }
     },
