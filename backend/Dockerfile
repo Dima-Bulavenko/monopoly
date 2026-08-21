@@ -1,11 +1,9 @@
 ARG UV_VERSION=0.10.7
-ARG PYTHON_VERSION=0.10.7
+ARG PYTHON_VERSION=3.14
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
 FROM public.ecr.aws/lambda/python:${PYTHON_VERSION} AS base
-
-WORKDIR /code
 
 ENV VIRTUAL_ENV="/venvs/.venv"
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
@@ -29,15 +27,15 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM base AS lambda
 
+ARG PYTHON_VERSION
+
 COPY --from=build-lambda ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    # Turns off buffering for easier container logging
     PYTHONUNBUFFERED=1 \
-    PATH="${VIRTUAL_ENV}/bin:$PATH"
+    PATH="${VIRTUAL_ENV}/bin:$PATH" \
+    PYTHONPATH="${VIRTUAL_ENV}/lib/python${PYTHON_VERSION}/site-packages"
 
 COPY ./app ./app
-
-ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 CMD [ "app.aws_handler.lambda_handler" ]
