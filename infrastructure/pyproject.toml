@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "aws-cdk-lib>=2.265.0,<3.0.0",
     "constructs>=10.5.0,<11.0.0",
+    "python-dotenv>=1.2.3",
 ]
 
 [dependency-groups]

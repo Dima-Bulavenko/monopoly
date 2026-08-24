@@ -1,4 +1,4 @@
-from aws_cdk import Stack
+from aws_cdk import Stack, aws_s3_deployment
 from aws_cdk import (
     aws_cloudfront as cloudfront,
 )
@@ -30,7 +30,7 @@ class FrontendStack(Stack):
             self,
             "Distribution",
             default_behavior=cloudfront.BehaviorOptions(
-                origin=origins.S3Origin(bucket),
+                origin=origins.S3BucketOrigin(bucket),
             ),
         )
 
@@ -40,4 +40,13 @@ class FrontendStack(Stack):
             origins.HttpOrigin(http_api.url.replace("https://", "").rstrip("/")),
             allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
             cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,
+        )
+
+        aws_s3_deployment.BucketDeployment(
+            self,
+            "FrontendDeployment",
+            sources=[aws_s3_deployment.Source.asset("../frontend/dist")],
+            destination_bucket=bucket,
+            distribution=distribution,
+            distribution_paths=["/*"],
         )
