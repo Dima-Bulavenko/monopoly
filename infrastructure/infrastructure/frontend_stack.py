@@ -36,7 +36,7 @@ class FrontendStack(Stack):
 
         # /api/*
         distribution.add_behavior(
-            "/api/*",
+            "/api/v1/*",
             origins.HttpOrigin(http_api.url.replace("https://", "").rstrip("/")),
             allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
             cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,

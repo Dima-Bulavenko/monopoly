@@ -14,6 +14,11 @@ from aws_cdk import (
 from aws_cdk import (
     aws_lambda as lambda_,
 )
+from aws_cdk import (
+    aws_apigateway as apigw_legacy,
+)
+from aws_cdk import RemovalPolicy
+from aws_cdk import aws_logs as logs
 from constructs import Construct
 
 from settings import BackendSettings
@@ -30,30 +35,26 @@ class BackendStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # WebSocket API
-
         backend = lambda_.DockerImageFunction(
             self,
             "BackendFunction",
             code=lambda_.DockerImageCode.from_image_asset("../backend"),
             timeout=Duration.seconds(30),
-            memory_size=256,
+            memory_size=1024,
         )
 
         # Give Lambda access to DynamoDB
         games_table.grant_read_write_data(backend)
 
         # HTTP API
-        http_api = apigw.HttpApi(
-            self,
-            "HttpApi",
-        )
+        http_api = apigw.HttpApi(self, "HttpApi")
 
         http_api.add_routes(
             path="/{proxy+}",
             methods=[apigw.HttpMethod.ANY],
             integration=integrations.HttpLambdaIntegration(
                 "HttpIntegration",
-                backend, # ty: ignore[invalid-argument-type]
+                backend,  # ty: ignore[invalid-argument-type]
             ),
         )
 
@@ -63,7 +64,7 @@ class BackendStack(Stack):
             connect_route_options=apigw.WebSocketRouteOptions(
                 integration=integrations.WebSocketLambdaIntegration(
                     "ConnectIntegration",
-                    backend, # ty: ignore[invalid-argument-type]
+                    backend,  # ty: ignore[invalid-argument-type]
                 )
             ),
         )
@@ -80,7 +81,9 @@ class BackendStack(Stack):
         )
         backend.add_environment("ENV", settings.env)
         backend.add_environment("DYNAMODB_TABLE_NAME", settings.dynamodb_table_name)
-        backend.add_environment("APIGW_MANAGEMENT_ENDPOINT", settings.apigw_management_endpoint)
+        backend.add_environment(
+            "APIGW_MANAGEMENT_ENDPOINT", settings.apigw_management_endpoint
+        )
         backend.add_environment("DATABASE_URL", settings.database_url)
         backend.add_environment("JWT_PRIVATE_KEY_PEM_PATH", settings.jwt_private_key)
         backend.add_environment("JWT_PUBLIC_KEY_PEM_PATH", settings.jwt_public_key)

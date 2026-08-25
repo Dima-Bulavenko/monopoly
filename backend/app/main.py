@@ -3,18 +3,16 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
-from mangum import Mangum
 
 from app.api.http.game_router import router as game_router
 from app.api.http.board_router import router as board_router
 from app.auth.api.router import router as auth_router
 from app.auth.infrastructure.db.postgres import get_engine
-from app.bootstrap import container, register_websocket_event_handlers
 from app.config import settings
 
 _IS_LOCAL = settings.is_local
 
-register_websocket_event_handlers(container)
+# register_websocket_event_handlers(container)
 
 
 @asynccontextmanager
@@ -51,6 +49,3 @@ if _IS_LOCAL:
 app.get("/", tags=["health"], include_in_schema=False)(
     lambda: {"status": "Project is running"}
 )
-
-# AWS Lambda entry point for HTTP routes (ignored when running with uvicorn locally)
-lambda_handler = Mangum(app, lifespan="off")
