@@ -29,9 +29,22 @@ class FrontendStack(Stack):
         distribution = cloudfront.Distribution(
             self,
             "Distribution",
+            default_root_object="_shell.html",
             default_behavior=cloudfront.BehaviorOptions(
-                origin=origins.S3BucketOrigin(bucket),
+                origin=origins.S3BucketOrigin.with_origin_access_control(bucket),
             ),
+            error_responses=[
+                cloudfront.ErrorResponse(
+                    http_status=403,
+                    response_http_status=200,
+                    response_page_path="/_shell.html",
+                ),
+                cloudfront.ErrorResponse(
+                    http_status=404,
+                    response_http_status=200,
+                    response_page_path="/_shell.html",
+                ),
+            ],
         )
 
         # /api/*
@@ -45,7 +58,7 @@ class FrontendStack(Stack):
         aws_s3_deployment.BucketDeployment(
             self,
             "FrontendDeployment",
-            sources=[aws_s3_deployment.Source.asset("../frontend/dist")],
+            sources=[aws_s3_deployment.Source.asset("../frontend/dist/client")],
             destination_bucket=bucket,
             distribution=distribution,
             distribution_paths=["/*"],
