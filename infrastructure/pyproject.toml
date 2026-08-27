@@ -17,3 +17,10 @@ dev = [
 
 [tool.ty.environment]
 python = "./.venv"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true

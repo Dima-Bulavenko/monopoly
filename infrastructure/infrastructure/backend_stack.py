@@ -1,24 +1,11 @@
 from aws_cdk import (
     Duration,
     Stack,
-)
-from aws_cdk import (
     aws_apigatewayv2 as apigw,
-)
-from aws_cdk import (
     aws_apigatewayv2_integrations as integrations,
-)
-from aws_cdk import (
     aws_dynamodb as dynamodb,
-)
-from aws_cdk import (
     aws_lambda as lambda_,
 )
-from aws_cdk import (
-    aws_apigateway as apigw_legacy,
-)
-from aws_cdk import RemovalPolicy
-from aws_cdk import aws_logs as logs
 from constructs import Construct
 
 from settings import BackendSettings
@@ -85,8 +72,8 @@ class BackendStack(Stack):
             "APIGW_MANAGEMENT_ENDPOINT", settings.apigw_management_endpoint
         )
         backend.add_environment("DATABASE_URL", settings.database_url)
-        backend.add_environment("JWT_PRIVATE_KEY_PEM_PATH", settings.jwt_private_key)
-        backend.add_environment("JWT_PUBLIC_KEY_PEM_PATH", settings.jwt_public_key)
+        backend.add_environment("JWT_PRIVATE_KEY_PEM", settings.jwt_private_key)
+        backend.add_environment("JWT_PUBLIC_KEY_PEM", settings.jwt_public_key)
         backend.add_environment("GOOGLE_CLIENT_ID", settings.google_client_id)
         backend.add_environment("APPLE_CLIENT_ID", settings.apple_client_id)
         self.http_api = http_api
